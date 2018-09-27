@@ -1,0 +1,18 @@
+.macke-dice {
+    height: 5vh;
+    width: 5vh;
+    display: flex;
+    background-color: cornsilk;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    cursor: pointer;
+
+    &.keep {
+        background-color: green;
+    }
+
+    &.do-not-keep {
+        background-color: red;
+    }
+}
