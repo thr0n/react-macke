@@ -3,9 +3,10 @@ import * as React from "react";
 import { MackeDice } from "../Dice/MackeDice";
 
 const initialState = {
+  currentScore: 0,
+  continuation: false,
   firstThrow: true,
   thrown: false,
-  currentScore: 0,
   diceStates: [
     { keepValue: false, taken: false, score: 1 },
     { keepValue: false, taken: false, score: 2 },
@@ -20,6 +21,10 @@ export class GameBoard extends React.Component {
   constructor(props) {
     super(props);
     this.state = initialState;
+  }
+
+  continuationNeeded(diceState) {
+    return diceState.filter(dice => dice.taken).length === 6;
   }
 
   mapDiceStateListToArray(diceStates) {
@@ -37,18 +42,6 @@ export class GameBoard extends React.Component {
 
     // check if there is at least one '1' or one '5'
     return thrownDices.filter(dice => dice.score === 1 || dice.score === 5).length > 0;
-
-    // if (this.state.firstThrow) {
-    //   const duplicates = [0, 0, 0, 0, 0, 0];
-    //   thrownDices.reduce((collector, dice) => {
-    //     duplicates[dice.score] = (duplicates[dice.score] || 0) + 1;
-    //     return collector;
-    //   }, duplicates);
-
-    //   return duplicates.find(element => element > 2);
-    // } 
-    // else {
-    // }
   }
 
   diceSelectionIsValid(takenDices) {
@@ -59,11 +52,6 @@ export class GameBoard extends React.Component {
 
     const filtered = takenDices.filter((diceState) => diceState.score === 5 || diceState.score === 1);
     return filtered.length > 0;
-
-    // see if all dices show '1' or '5'
-    //return ( // _.uniqWith(takenDices.map(diceState => diceState.score === 1 || diceState.score === 5)).length === 1
-    //takenDices.filter((diceState) => diceState.score !== 5 && diceState !== 1).length === 0
-    //  );
   }
 
   rollDices() {
@@ -72,7 +60,7 @@ export class GameBoard extends React.Component {
 
     currentStates.forEach((element, index) => {
       if (!element.keepValue) {
-        currentStates[index].score = generateNewValue();
+        currentStates[index].score = index%2 === 0 ? 1 : 6;
       }
     });
     this.setState({
@@ -103,7 +91,7 @@ export class GameBoard extends React.Component {
     const scores = this.mapDiceStateListToArray(takenDices);
 
     if (this.diceSelectionIsStreet(scores)) {
-      // TODO: handle 'Anschluss'!
+      this.setState({continuation: true})
       return 1000;
     }
 
@@ -118,16 +106,16 @@ export class GameBoard extends React.Component {
     const isValid = this.diceSelectionIsValid(takenDices);
     
     if (isValid) {
-      return this.calculateScore(takenDices);
-      /*
-      // TODO: handle game state management after the first turn: 
         const score = this.calculateScore(takenDices);
+        const needsContinuation = this.continuationNeeded(this.state.diceStates);
+
         this.setState({
           firstThrow: false,
           thrown: false,
-          currentScore: this.state.currentScore + score
+          currentScore: this.state.currentScore + score,
+          continuationNeeded: needsContinuation
         });
-      */
+        return score
     } else {
       return -1;
     }
@@ -143,6 +131,8 @@ export class GameBoard extends React.Component {
               diceId={index}
               value={diceState.score}
               keepValue={diceState.keepValue}
+              clickable={this.state.thrown && !diceState.taken}
+              taken={diceState.taken}
               onClick={this.toggleKeepValue.bind(this)}
             />
           );

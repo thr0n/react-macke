@@ -23,8 +23,8 @@ describe("GameBoard", () => {
             { keepValue: true, taken: false, score: 2 }
         ];
         const takenDices2 = [
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 1 },
+            { keepValue: true, taken: false, score: 2 },
+            { keepValue: true, taken: false, score: 4 },
             { keepValue: true, taken: false, score: 2 },
             { keepValue: true, taken: false, score: 3 },
             { keepValue: true, taken: false, score: 3 },
@@ -33,7 +33,7 @@ describe("GameBoard", () => {
         const result = wrapper.instance().diceCompositionIsValid(takenDices);
         expect(result).toBe(false);
 
-        const result2 = wrapper.instance().diceCompositionIsValid(takenDices);
+        const result2 = wrapper.instance().diceCompositionIsValid(takenDices2);
         expect(result2).toBe(false);
     });
 
@@ -154,6 +154,21 @@ describe("GameBoard", () => {
 
         const result = wrapper.instance().takeScores(selectedDices);
         expect(result).toBe(400);
+    })
+
+    it("should return 1600 points for three times 1 and three times 6", () => {
+        const wrapper = shallow(<GameBoard/>);
+        const selectedDices =[
+            { keepValue: true, taken: false, score: 1 },
+            { keepValue: true, taken: false, score: 1 },
+            { keepValue: true, taken: false, score: 6 },
+            { keepValue: true, taken: false, score: 6 },
+            { keepValue: true, taken: false, score: 6 },
+            { keepValue: true, taken: false, score: 1 }
+        ]
+
+        const result = wrapper.instance().takeScores(selectedDices);
+        expect(result).toBe(1600);
     })
 
     it("should return 1000 points for 'the street'", () => {

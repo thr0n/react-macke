@@ -5,8 +5,12 @@ import "./MackeDice.scss";
 export const MackeDice = (props) => {
     return (
       <span
-        className={"macke-dice " + (props.keepValue ? "keep" : "do-not-keep")}
-        onClick={() => props.onClick(props.diceId, !props.keepValue)}>
+        className={"macke-dice " + (!props.clickable ? "not-selectable" : (props.keepValue ? "keep" : "do-not-keep"))}
+        onClick={() => { 
+          if(props.clickable) {
+            props.onClick(props.diceId, !props.keepValue)
+          }
+        }}>
           {props.value}
       </span>
     );
@@ -16,5 +20,6 @@ MackeDice.propTypes = {
   diceId: PropTypes.number,
   value: PropTypes.number,
   keepValue: PropTypes.bool,
+  clickable: PropTypes.bool,
   onClick: PropTypes.func
 };

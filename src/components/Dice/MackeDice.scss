@@ -15,4 +15,9 @@
     &.do-not-keep {
         background-color: red;
     }
+
+    &.not-selectable {
+        background-color: lightgray;
+        cursor: not-allowed;
+    }
 }
