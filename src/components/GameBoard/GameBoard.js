@@ -1,6 +1,9 @@
 import * as React from "react";
 // import * as _ from "lodash";
 import { MackeDice } from "../Dice/MackeDice";
+import {calculateScore, continuationNeeded, diceSelectionIsValid, diceCompositionIsValid} from "../../engine/GameEngine";
+
+import './GameBoard.scss';
 
 const initialState = {
   currentScore: 0,
@@ -23,37 +26,6 @@ export class GameBoard extends React.Component {
     this.state = initialState;
   }
 
-  continuationNeeded(diceState) {
-    return diceState.filter(dice => dice.taken).length === 6;
-  }
-
-  mapDiceStateListToArray(diceStates) {
-    const scoreDist = [0,0,0,0,0,0];
-
-    diceStates.map((diceState) => {
-      return scoreDist[diceState.score-1] = (scoreDist[diceState.score-1] || 0) +1;
-    }, scoreDist)
-    return scoreDist;
-  }
-
-  diceCompositionIsValid(thrownDices) {
-    // find dices that aren't taken yet
-    thrownDices = thrownDices.filter(dice => !dice.taken);
-
-    // check if there is at least one '1' or one '5'
-    return thrownDices.filter(dice => dice.score === 1 || dice.score === 5).length > 0;
-  }
-
-  diceSelectionIsValid(takenDices) {
-    if (takenDices.length < 1) {
-      console.log("Bitte mindestens einen Würfel auswählen!")
-      return false;
-    }
-
-    const filtered = takenDices.filter((diceState) => diceState.score === 5 || diceState.score === 1);
-    return filtered.length > 0;
-  }
-
   rollDices() {
     const generateNewValue = () => Math.floor(Math.random() * 6) + 1;
     const currentStates = this.state.diceStates;
@@ -69,7 +41,7 @@ export class GameBoard extends React.Component {
       diceStates: currentStates
     });
 
-    if (this.diceCompositionIsValid(this.state.diceStates)) {
+    if (diceCompositionIsValid(this.state.diceStates)) {
       console.log("Valid throw!");
     } else {
       console.log("Invalid throw!");
@@ -83,31 +55,16 @@ export class GameBoard extends React.Component {
     this.setState({ diceStates });
   }
 
-  diceSelectionIsStreet(diceSelection) { 
-    return JSON.stringify(diceSelection) === JSON.stringify([1,1,1,1,1,1]);
-  }
-
-  calculateScore(takenDices) {
-    const scores = this.mapDiceStateListToArray(takenDices);
-
-    if (this.diceSelectionIsStreet(scores)) {
-      this.setState({continuation: true})
-      return 1000;
-    }
-
-    return (scores[0] * 100) + (scores[4] * 50) + scores.filter((scores) => scores > 2) * 100;
-  }
-
   takeScores(takenDices) {
     takenDices = takenDices.filter(
       state => state.keepValue && !state.keepValue.taken
     );
 
-    const isValid = this.diceSelectionIsValid(takenDices);
+    const isValid = diceSelectionIsValid(takenDices);
     
     if (isValid) {
-        const score = this.calculateScore(takenDices);
-        const needsContinuation = this.continuationNeeded(this.state.diceStates);
+        const score = calculateScore(takenDices);
+        const needsContinuation = continuationNeeded(this.state.diceStates);
 
         this.setState({
           firstThrow: false,
@@ -124,6 +81,7 @@ export class GameBoard extends React.Component {
   render() {
     return (
       <div>
+      <div className="dice-container">
         {this.state.diceStates.map((diceState, index) => {
           return (
             <MackeDice
@@ -137,12 +95,14 @@ export class GameBoard extends React.Component {
             />
           );
         })}
+        </div>
+        <div className="action-container">
         {!this.state.thrown ? (
           <span onClick={this.rollDices.bind(this)}>Würfeln!</span>
         ) : (
           <span onClick={() => this.takeScores(this.state.diceStates)}>Auswählen...</span>
         )}
-
+        </div>
         <p>Current Score: {this.state.currentScore}</p>
       </div>
     );

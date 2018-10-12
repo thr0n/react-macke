@@ -3,6 +3,7 @@ import {shallow} from "enzyme";
 import {GameBoard} from "../GameBoard";
 
 describe("GameBoard", () => {
+    /* TODO: move these tests to GameEngine test!
     it("should detect an invalid single dice", () => {
         const wrapper = shallow(<GameBoard/>);
         const takenDices = [
@@ -86,7 +87,7 @@ describe("GameBoard", () => {
 
         const result2 = wrapper.instance().diceSelectionIsValid(selectedDices);
         expect(result2).toBe(false)
-    })
+    })*/
 
     it("should return 50 points for a single 5", () => {
         const wrapper = shallow(<GameBoard/>);
@@ -156,7 +157,7 @@ describe("GameBoard", () => {
         expect(result).toBe(400);
     })
 
-    it("should return 1600 points for three times 1 and three times 6", () => {
+    it("should return 900 points for three times 1 and three times 6", () => {
         const wrapper = shallow(<GameBoard/>);
         const selectedDices =[
             { keepValue: true, taken: false, score: 1 },
@@ -168,7 +169,22 @@ describe("GameBoard", () => {
         ]
 
         const result = wrapper.instance().takeScores(selectedDices);
-        expect(result).toBe(1600);
+        expect(result).toBe(900);
+    })
+
+    it("should return 700 points for three times 5 and three times 2", () => {
+        const wrapper = shallow(<GameBoard/>);
+        const selectedDices =[
+            { keepValue: true, taken: false, score: 5 },
+            { keepValue: true, taken: false, score: 2 },
+            { keepValue: true, taken: false, score: 5 },
+            { keepValue: true, taken: false, score: 5 },
+            { keepValue: true, taken: false, score: 2 },
+            { keepValue: true, taken: false, score: 2 }
+        ]
+
+        const result = wrapper.instance().takeScores(selectedDices);
+        expect(result).toBe(700);
     })
 
     it("should return 1000 points for 'the street'", () => {
