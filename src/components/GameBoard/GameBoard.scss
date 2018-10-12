@@ -3,10 +3,14 @@
     align-items: center;
     justify-content: center;
     height: 10vh;
-    background-color: antiquewhite;
     margin-bottom: 1vh;
 }
 
 .action-container {
-    background-color: beige;
+    margin-bottom: 1vh;
+    
+    button {
+        margin-right: 3px;
+        margin-left: 3px;
+    }
 }

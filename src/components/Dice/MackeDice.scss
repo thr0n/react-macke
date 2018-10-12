@@ -1,6 +1,6 @@
 .macke-dice {
-    height: 5vh;
-    width: 5vh;
+    height: 30px;
+    width: 30px;
     display: flex;
     background-color: cornsilk;
     justify-content: center;
@@ -12,11 +12,15 @@
     margin-right: 0.3vw;
 
     &.keep {
-        background-color: green;
+        box-shadow: 0px 0px 2px 2px lightblue;
     }
 
     &.do-not-keep {
-        background-color: red;
+        // box-shadow: 0px 0px 2px 2px lightblue;
+    }
+
+    &.used {
+        box-shadow: 0px 0px 2px 2px lightcoral;        
     }
 
     &.not-selectable {

@@ -1,22 +1,34 @@
 import * as React from "react";
 // import * as _ from "lodash";
+import { Col, Row } from "antd";
 import { MackeDice } from "../Dice/MackeDice";
-import {calculateScore, continuationNeeded, diceSelectionIsValid, diceCompositionIsValid} from "../../engine/GameEngine";
+import { ActionContainer } from "../ActionContainer/ActionContainer";
+import {
+  calculateScore,
+  continuationNeeded,
+  diceSelectionIsValid,
+  diceCompositionIsValid,
+  verifyAtLeastOneDiceIsSelected,
+  processTakeScores
+} from "../../engine/GameEngine";
 
-import './GameBoard.scss';
+import "./GameBoard.scss";
+import { CurrentPlayer } from "../CurrentPlayer/CurrentPlayer";
 
 const initialState = {
   currentScore: 0,
-  continuation: false,
+  continuationNeeded: false,
   firstThrow: true,
   thrown: false,
+  canPass: true,
+  validSelection: false,
   diceStates: [
     { keepValue: false, taken: false, score: 1 },
-    { keepValue: false, taken: false, score: 2 },
     { keepValue: false, taken: false, score: 3 },
     { keepValue: false, taken: false, score: 4 },
-    { keepValue: false, taken: false, score: 5 },
-    { keepValue: false, taken: false, score: 6 }
+    { keepValue: false, taken: false, score: 6 },
+    { keepValue: false, taken: false, score: 2 },
+    { keepValue: false, taken: false, score: 5 }
   ]
 };
 
@@ -32,7 +44,7 @@ export class GameBoard extends React.Component {
 
     currentStates.forEach((element, index) => {
       if (!element.keepValue) {
-        currentStates[index].score = index%2 === 0 ? 1 : 6;
+        currentStates[index].score = index % 2 === 0 ? 1 : 6;
       }
     });
     this.setState({
@@ -56,55 +68,70 @@ export class GameBoard extends React.Component {
   }
 
   takeScores(takenDices) {
+
+    // TODO: see GameEngine
+    processTakeScores();
+
     takenDices = takenDices.filter(
       state => state.keepValue && !state.keepValue.taken
     );
 
-    const isValid = diceSelectionIsValid(takenDices);
-    
-    if (isValid) {
-        const score = calculateScore(takenDices);
-        const needsContinuation = continuationNeeded(this.state.diceStates);
+    let score = -1; // just for debugging at the moment
 
-        this.setState({
-          firstThrow: false,
-          thrown: false,
-          currentScore: this.state.currentScore + score,
-          continuationNeeded: needsContinuation
-        });
-        return score
-    } else {
-      return -1;
-    }
+    const isValid = diceSelectionIsValid(takenDices);
+
+    if (isValid) {
+      score = calculateScore(takenDices);
+      const needsContinuation = continuationNeeded(this.state.diceStates);
+
+      this.setState({
+        firstThrow: false,
+        thrown: false,
+        currentScore: this.state.currentScore + score,
+        continuationNeeded: needsContinuation
+      });
+    } 
+
+    console.log("calculated score: " + score);
+    return score;
   }
 
   render() {
     return (
-      <div>
-      <div className="dice-container">
-        {this.state.diceStates.map((diceState, index) => {
-          return (
-            <MackeDice
-              key={`dice-${index}`}
-              diceId={index}
-              value={diceState.score}
-              keepValue={diceState.keepValue}
-              clickable={this.state.thrown && !diceState.taken}
-              taken={diceState.taken}
-              onClick={this.toggleKeepValue.bind(this)}
-            />
-          );
-        })}
-        </div>
-        <div className="action-container">
-        {!this.state.thrown ? (
-          <span onClick={this.rollDices.bind(this)}>Würfeln!</span>
-        ) : (
-          <span onClick={() => this.takeScores(this.state.diceStates)}>Auswählen...</span>
-        )}
-        </div>
-        <p>Current Score: {this.state.currentScore}</p>
-      </div>
+      <Row>
+        <Col span="9" />
+        <Col span="6">
+          <CurrentPlayer
+            playerName="Hendrik"
+            overallScore={0}
+            currentScore={0}
+          />
+          <div className="dice-container">
+            {this.state.diceStates.map((diceState, index) => {
+              return (
+                <MackeDice
+                  key={`dice-${index}`}
+                  diceId={index}
+                  value={diceState.score}
+                  keepValue={diceState.keepValue}
+                  clickable={this.state.thrown && !diceState.taken}
+                  taken={diceState.taken}
+                  onClick={this.toggleKeepValue.bind(this)}
+                />
+              );
+            })}
+          </div>
+          <ActionContainer
+            rollDices={() => this.rollDices()}
+            onTakeScores={() => this.takeScores(this.state.diceStates)}
+            continuationNeeded={this.state.continuationNeeded}
+            firstThrow={this.state.firstThrow}
+            canPass={this.state.canPass}
+            canTakeScores={verifyAtLeastOneDiceIsSelected(this.state.diceStates)}
+          />
+        </Col>
+        <Col span="9" />
+      </Row>
     );
   }
 }

@@ -1,7 +1,5 @@
 export const calculateScore = (diceStates) => {
-
     const takenDices = getTakenDices(diceStates);
-
     const scoreList = mapDiceStateListToArray(takenDices);
 
     if (diceSelectionIsStreet(scoreList)) {
@@ -31,7 +29,7 @@ const additionalTriple = (scores) => {
 }
 
 const getTakenDices = (diceStates) => {
-    return diceStates.filter(state => state.keepValue && !state.keepValue.taken);
+    return diceStates.filter(state => state.keepValue && !state.taken);
 }
 
 export const continuationNeeded = (diceState) => {
@@ -56,4 +54,19 @@ export const diceSelectionIsValid = (diceStates) => {
 
     const filtered = takenDices.filter((diceState) => diceState.score === 5 || diceState.score === 1);
     return filtered.length > 0;
+}
+
+export const verifyAtLeastOneDiceIsSelected = (diceStates) => {
+    return getTakenDices(diceStates).length > 0;
+}
+
+/*
+ * TODO: 
+ * Write that a function that takes the whole game state, calculates the scores
+ * and decides which actions can be performed next.
+ * 
+ * Implement other functions, that are able to handle "Zug beenden" and "Passen"
+*/
+export const processTakeScores = (/* game state */) => {
+    return {}
 }
