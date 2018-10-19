@@ -1,14 +1,3 @@
-export const calculateScore = (diceStates) => {
-    const takenDices = getTakenDices(diceStates);
-    const scoreList = mapDiceStateListToArray(takenDices);
-
-    if (diceSelectionIsStreet(scoreList)) {
-        return 1000;
-    }
-
-    return (scoreList[0] * 100) + (scoreList[4] * 50) + additionalTriple(scoreList);
-}
-
 const mapDiceStateListToArray = (diceStates) => {
     const scoreDist = [0, 0, 0, 0, 0, 0];
 
@@ -22,13 +11,9 @@ const diceSelectionIsStreet = (scoreList) => {
     const lowerStreet = JSON.stringify(scoreList) === JSON.stringify([1, 1, 1, 1, 1, 0]);
     const upperStreet = JSON.stringify(scoreList) === JSON.stringify([0, 1, 1, 1, 1, 1]);
 
-    return lowerStreet || upperStreet;
-}
+    debugger
 
-const additionalTriple = (scores) => {
-    const value = scores.findIndex((score, index) => index !== 0 && index !== 4 && score > 2);
-    const additional = (value + 1) * 100;
-    return additional
+    return lowerStreet || upperStreet;
 }
 
 const getTakenDices = (diceStates) => {
@@ -86,6 +71,46 @@ export const verifyAtLeastOneDiceIsSelected = (diceStates) => {
     return getTakenDices(diceStates).length > 0;
 }
 
+const calculateScores = (scoreList) => {
+    let currentScore = 0;
+
+    scoreList.forEach((score, index) => {
+
+        // TODO: do it right and clean up afterwards
+        if (score === 5) {
+            console.log("all same -> 1000")
+            currentScore += 1000;
+        } else if (score === 4) {
+            console.log("four of a kind:" + (index + 1) * 100);
+            score += (index +1) * 100
+        } else if (score === 3) {
+            console.log("three of a kind: " + (index + 1) * 100);
+            score += (index +1) * 100
+        } else if (score === 2) {
+            console.log("index = " + index)
+            console.log("val = " + score )
+            console.log("hm... nur 2 -> " + (index + 1) * 10 * 2)
+
+            // TODO: shouldn't be hard coded
+            if (index === 0) {
+                currentScore += 200;
+            } else {
+                currentScore += 100;
+            }
+
+        } else if (score === 1) {
+            // TODO: shouldn't be hard coded
+            if (index === 0) {
+                currentScore += 100;
+            } else {
+                currentScore += 50;
+            }
+        }
+    })
+    console.log("currentScore= " + currentScore)
+    return currentScore;
+}
+
 /*
  * TODO: 
  * Write a function that takes the whole game state, calculates the scores
@@ -105,22 +130,8 @@ export const processTakeScores = (gameState) => {
         validSelection
     };
 
-    if (!validSelection) {
-        diceStates.forEach((dice) => {
-            if (dice.keepValue && !dice.taken) {
-                dice.keepValue = false;
-            }
-          });
-
-        nextState = {...nextState,
-            diceStates
-        }
-        return nextState;
-    }
-
-    selectedDices.map((dice) => dice.taken = true);
-
     if (diceSelectionIsStreet(scoreList)) {
+        selectedDices.map((dice) => dice.taken = true);
         nextState = { ...nextState,
             continuationNeeded: true,
             thrown: false,
@@ -130,7 +141,26 @@ export const processTakeScores = (gameState) => {
         return nextState;
     }
 
-    // ...
+    if (!validSelection) {
+        diceStates.forEach((dice) => {
+            if (dice.keepValue && !dice.taken) {
+                dice.keepValue = false;
+            }
+        });
+
+        nextState = { ...nextState,
+            diceStates
+        }
+        return nextState;
+    }
+
+    selectedDices.map((dice) => dice.taken = true);
+
+    const currentScore = calculateScores(scoreList)
+
+    nextState = { ...nextState,
+        currentScore: gameState.currentScore + currentScore
+    };
 
     return nextState;
 }

@@ -94,7 +94,7 @@ export class GameBoard extends React.Component {
     const nextState = processTakeScores(this.state);
     console.log(nextState);
 
-    if (!nextState.validSelection) {
+    if (!nextState.validSelection && !nextState.continuationNeeded) {
       this.throwInvalidDiceSelectionMessage()
     }
 

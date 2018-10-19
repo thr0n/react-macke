@@ -87,7 +87,7 @@ describe("GameBoard", () => {
 
         const result2 = wrapper.instance().diceSelectionIsValid(selectedDices);
         expect(result2).toBe(false)
-    })*/
+    })
 
     it("should return 50 points for a single 5", () => {
         const wrapper = shallow(<GameBoard/>);
@@ -99,27 +99,6 @@ describe("GameBoard", () => {
         expect(result).toBe(50);
     })
 
-    it("should return 100 points for a single 1", () => {
-        const wrapper = shallow(<GameBoard/>);
-        const selectedDices =[
-            { keepValue: true, taken: false, score: 1 },
-        ]
-
-        const result = wrapper.instance().takeScores(selectedDices);
-        expect(result).toBe(100);
-
-    })
-
-    it("should return 150 points for a single 1 and a single 5", () => {const wrapper = shallow(<GameBoard/>);
-        const selectedDices =[
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 5 }
-        ]
-
-        const result = wrapper.instance().takeScores(selectedDices);
-        expect(result).toBe(150);
-    })
-
     it("should return 200 points for two times 1", () => {
         const wrapper = shallow(<GameBoard/>);
         const selectedDices =[
@@ -129,17 +108,6 @@ describe("GameBoard", () => {
 
         const result = wrapper.instance().takeScores(selectedDices);
         expect(result).toBe(200);
-    })
-
-    it("should return 100 points for two times 5", () => {
-        const wrapper = shallow(<GameBoard/>);
-        const selectedDices =[
-            { keepValue: true, taken: false, score: 5 },
-            { keepValue: true, taken: false, score: 5 }
-        ]
-
-        const result = wrapper.instance().takeScores(selectedDices);
-        expect(result).toBe(100);
     })
 
     it("should return 400 points for three times 3 and a single 1", () => {
@@ -200,5 +168,5 @@ describe("GameBoard", () => {
 
         const result = wrapper.instance().takeScores(selectedDices);
         expect(result).toBe(1000);
-    })
+    })*/
 })
