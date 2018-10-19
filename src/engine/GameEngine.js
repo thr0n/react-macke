@@ -18,8 +18,12 @@ const mapDiceStateListToArray = (diceStates) => {
     return scoreDist;
 }
 
-const diceSelectionIsStreet = (diceSelection) => {
-    return JSON.stringify(diceSelection) === JSON.stringify([1, 1, 1, 1, 1, 1]);
+const diceSelectionIsStreet = (scoreList) => {
+    const lowerStreet = JSON.stringify(scoreList) === JSON.stringify([1, 1, 1, 1, 1, 0]);
+    const upperStreet = JSON.stringify(scoreList) === JSON.stringify([0, 1, 1, 1, 1, 1]);
+
+    return lowerStreet || upperStreet;
+        
 }
 
 const additionalTriple = (scores) => {
@@ -62,11 +66,41 @@ export const verifyAtLeastOneDiceIsSelected = (diceStates) => {
 
 /*
  * TODO: 
- * Write that a function that takes the whole game state, calculates the scores
+ * Write a function that takes the whole game state, calculates the scores
  * and decides which actions can be performed next.
  * 
  * Implement other functions, that are able to handle "Zug beenden" and "Passen"
-*/
-export const processTakeScores = (/* game state */) => {
-    return {}
+ */
+export const processTakeScores = (gameState) => {
+    let nextState = gameState;
+
+    const selectedDices = getTakenDices(gameState.diceStates);
+    const scoreList = mapDiceStateListToArray(selectedDices);
+    const validSelection = diceSelectionIsValid(selectedDices);
+
+    nextState = { ...nextState,
+        validSelection
+    };
+
+    if (!validSelection) { return nextState; }
+
+    selectedDices.map((dice) => dice.taken = true);
+
+    if (diceSelectionIsStreet(scoreList)) {
+        nextState = { ...nextState,
+            continuationNeeded: true,
+            thrown: false,
+            firstThrow: true,
+            currentScore: gameState.currentScore + 1000
+        }
+        return nextState;
+    }
+
+    nextState = {...nextState, continuationNeeded: false}
+
+    return nextState;
+}
+
+export const processFinishMove = () => {
+    throw new Error("unimplemented!")
 }

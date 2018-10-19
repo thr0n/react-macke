@@ -17,12 +17,22 @@ class DebugToolBase extends React.Component {
     this.props.onUpdate(dices)
   }
 
+  createStreet() {
+    this.props.form.setFieldsValue({
+      'dice-score-0': 1,
+      'dice-score-1': 2,
+      'dice-score-2': 3,
+      'dice-score-3': 4,
+      'dice-score-4': 5,
+    })
+  }
+
   render() {
     const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
 
     return (
       <div>
-        <Form layout="inline" onSubmit={this.handleSubmit.bind(this)}>
+        <Form layout="horizontal" onSubmit={this.handleSubmit.bind(this)}>
           {this.props.diceStates.map((diceStates, index) => {
             return (
               <FormItem key={`dice-score-${index}`}>
@@ -33,8 +43,10 @@ class DebugToolBase extends React.Component {
               </FormItem>
             );
           })}
-
           <FormItem>
+            <Button type="primary" onClick={() => this.createStreet()} style={{marginRight: "5px"}}>
+              Straße
+            </Button>
             <Button type="primary" htmlType="submit">
               Übernehmen
             </Button>

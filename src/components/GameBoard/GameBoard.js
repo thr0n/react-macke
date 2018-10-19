@@ -1,6 +1,6 @@
 import * as React from "react";
 // import * as _ from "lodash";
-import { Col, Row, Popover } from "antd";
+import { Col, Row, Popover, notification, message } from "antd";
 import { MackeDice } from "../Dice/MackeDice";
 import { ActionContainer } from "../ActionContainer/ActionContainer";
 import {
@@ -9,7 +9,8 @@ import {
   diceSelectionIsValid,
   diceCompositionIsValid,
   verifyAtLeastOneDiceIsSelected,
-  processTakeScores
+  processTakeScores,
+  processFinishMove
 } from "../../engine/GameEngine";
 
 import "./GameBoard.scss";
@@ -28,8 +29,8 @@ const initialState = {
     { keepValue: false, taken: false, score: 3 },
     { keepValue: false, taken: false, score: 4 },
     { keepValue: false, taken: false, score: 6 },
-    { keepValue: false, taken: false, score: 2 },
-    { keepValue: false, taken: false, score: 5 }
+    { keepValue: false, taken: false, score: 2 }
+    // { keepValue: false, taken: false, score: 5 }
   ]
 };
 
@@ -40,14 +41,30 @@ export class GameBoard extends React.Component {
   }
 
   rollDices() {
+    const throwInvalidDiceCompositionMessage = () => {
+      notification.open({
+        message: "Ungültiger Wurf",
+        description: "Keiner der Würfel hat den Wert 1 oder 5."
+      });
+    };
+
     const generateNewValue = () => Math.floor(Math.random() * 6) + 1;
     const currentStates = this.state.diceStates;
 
-    currentStates.forEach((element, index) => {
-      if (!element.keepValue) {
-        currentStates[index].score = index % 2 === 0 ? 1 : 6;
-      }
-    });
+    if (this.state.continuationNeeded) {
+      currentStates.forEach((element, index) => {
+        currentStates[index].score = generateNewValue();
+        currentStates[index].keepValue = false;
+        currentStates[index].taken = false;
+      });
+    } else {
+      currentStates.forEach((element, index) => {
+        if (!element.keepValue) {
+          currentStates[index].score = generateNewValue();
+        }
+      });
+    }
+
     this.setState({
       thrown: true,
       firstThrow: false,
@@ -58,6 +75,7 @@ export class GameBoard extends React.Component {
       console.log("Valid throw!");
     } else {
       console.log("Invalid throw!");
+      throwInvalidDiceCompositionMessage();
       this.setState(initialState);
     }
   }
@@ -70,30 +88,36 @@ export class GameBoard extends React.Component {
 
   takeScores(takenDices) {
     // TODO: see GameEngine
-    processTakeScores();
+    const nextState = processTakeScores(this.state);
+    console.log(nextState);
 
-    takenDices = takenDices.filter(
-      state => state.keepValue && !state.keepValue.taken
-    );
-
-    let score = -1; // just for debugging at the moment
-
-    const isValid = diceSelectionIsValid(takenDices);
-
-    if (isValid) {
-      score = calculateScore(takenDices);
-      const needsContinuation = continuationNeeded(this.state.diceStates);
-
-      this.setState({
-        firstThrow: false,
-        thrown: false,
-        currentScore: this.state.currentScore + score,
-        continuationNeeded: needsContinuation
-      });
+    if (nextState.continuationNeeded) {
+      message.warning("Anschluss! Du musst weiterspielen!");
     }
 
-    console.log("calculated score: " + score);
-    return score;
+    this.setState(nextState);
+
+    // takenDices = takenDices.filter(
+    //   state => state.keepValue && !state.keepValue.taken
+    // );
+
+    // let score = -1; // just for debugging at the moment
+
+    // const isValid = diceSelectionIsValid(takenDices);
+
+    // if (isValid) {
+    //   score = calculateScore(takenDices);
+    //   const needsContinuation = continuationNeeded(this.state.diceStates);
+
+    //   this.setState({
+    //     firstThrow: false,
+    //     thrown: false,
+    //     currentScore: this.state.currentScore + score,
+    //     continuationNeeded: needsContinuation
+    //   });
+    // }
+
+    // return score;
   }
 
   updateScores(diceStates) {
@@ -108,7 +132,7 @@ export class GameBoard extends React.Component {
           <CurrentPlayer
             playerName="Hendrik"
             overallScore={0}
-            currentScore={0}
+            currentScore={this.state.currentScore}
           />
           <div className="dice-container">
             {this.state.diceStates.map((diceState, index) => {
@@ -128,8 +152,10 @@ export class GameBoard extends React.Component {
           <ActionContainer
             rollDices={() => this.rollDices()}
             onTakeScores={() => this.takeScores(this.state.diceStates)}
+            onFinishMove={() => processFinishMove()}
             continuationNeeded={this.state.continuationNeeded}
             firstThrow={this.state.firstThrow}
+            thrown={this.state.thrown}
             canPass={this.state.canPass}
             canTakeScores={verifyAtLeastOneDiceIsSelected(
               this.state.diceStates
