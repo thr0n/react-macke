@@ -1,12 +1,8 @@
 import * as React from "react";
-// import * as _ from "lodash";
 import { Col, Row, Popover, notification, message } from "antd";
 import { MackeDice } from "../Dice/MackeDice";
 import { ActionContainer } from "../ActionContainer/ActionContainer";
 import {
-  calculateScore,
-  continuationNeeded,
-  diceSelectionIsValid,
   diceCompositionIsValid,
   verifyAtLeastOneDiceIsSelected,
   processTakeScores,
@@ -40,22 +36,30 @@ export class GameBoard extends React.Component {
     this.state = initialState;
   }
 
-  rollDices() {
-    const throwInvalidDiceCompositionMessage = () => {
-      notification.open({
-        message: "Ungültiger Wurf",
-        description: "Keiner der Würfel hat den Wert 1 oder 5."
-      });
-    };
+  throwInvalidDiceCompositionMessage = () => {
+    notification.open({
+      message: "Ungültiger Wurf",
+      description: "Keiner der Würfel hat den Wert 1 oder 5."
+    });
+  };
 
+  throwInvalidDiceSelectionMessage = () => {
+    notification.open({
+      message: "Ungültige Auswahl",
+      description: "Du musst mindestens eine 1 oder eine 5 auswählen. Wählst du zusätzlich eine " + 
+      "andere Augenzahl, muss diese mindestens drei mal ausgewählt sein!"
+    });
+  };
+
+  rollDices() {
     const generateNewValue = () => Math.floor(Math.random() * 6) + 1;
     const currentStates = this.state.diceStates;
 
     if (this.state.continuationNeeded) {
-      currentStates.forEach((element, index) => {
-        currentStates[index].score = generateNewValue();
-        currentStates[index].keepValue = false;
-        currentStates[index].taken = false;
+      currentStates.forEach((state) => {
+        state.score = generateNewValue();
+        state.keepValue = false;
+        state.taken = false;
       });
     } else {
       currentStates.forEach((element, index) => {
@@ -75,7 +79,7 @@ export class GameBoard extends React.Component {
       console.log("Valid throw!");
     } else {
       console.log("Invalid throw!");
-      throwInvalidDiceCompositionMessage();
+      this.throwInvalidDiceCompositionMessage();
       this.setState(initialState);
     }
   }
@@ -86,38 +90,19 @@ export class GameBoard extends React.Component {
     this.setState({ diceStates });
   }
 
-  takeScores(takenDices) {
-    // TODO: see GameEngine
+  takeScores() {
     const nextState = processTakeScores(this.state);
     console.log(nextState);
+
+    if (!nextState.validSelection) {
+      this.throwInvalidDiceSelectionMessage()
+    }
 
     if (nextState.continuationNeeded) {
       message.warning("Anschluss! Du musst weiterspielen!");
     }
 
     this.setState(nextState);
-
-    // takenDices = takenDices.filter(
-    //   state => state.keepValue && !state.keepValue.taken
-    // );
-
-    // let score = -1; // just for debugging at the moment
-
-    // const isValid = diceSelectionIsValid(takenDices);
-
-    // if (isValid) {
-    //   score = calculateScore(takenDices);
-    //   const needsContinuation = continuationNeeded(this.state.diceStates);
-
-    //   this.setState({
-    //     firstThrow: false,
-    //     thrown: false,
-    //     currentScore: this.state.currentScore + score,
-    //     continuationNeeded: needsContinuation
-    //   });
-    // }
-
-    // return score;
   }
 
   updateScores(diceStates) {
@@ -151,7 +136,7 @@ export class GameBoard extends React.Component {
           </div>
           <ActionContainer
             rollDices={() => this.rollDices()}
-            onTakeScores={() => this.takeScores(this.state.diceStates)}
+            onTakeScores={() => this.takeScores()}
             onFinishMove={() => processFinishMove()}
             continuationNeeded={this.state.continuationNeeded}
             firstThrow={this.state.firstThrow}
