@@ -1,6 +1,6 @@
 import * as React from "react";
 // import * as _ from "lodash";
-import { Col, Row } from "antd";
+import { Col, Row, Popover } from "antd";
 import { MackeDice } from "../Dice/MackeDice";
 import { ActionContainer } from "../ActionContainer/ActionContainer";
 import {
@@ -14,6 +14,7 @@ import {
 
 import "./GameBoard.scss";
 import { CurrentPlayer } from "../CurrentPlayer/CurrentPlayer";
+import { DebugTool } from "../DebugTool/DebugTool";
 
 const initialState = {
   currentScore: 0,
@@ -68,7 +69,6 @@ export class GameBoard extends React.Component {
   }
 
   takeScores(takenDices) {
-
     // TODO: see GameEngine
     processTakeScores();
 
@@ -90,10 +90,14 @@ export class GameBoard extends React.Component {
         currentScore: this.state.currentScore + score,
         continuationNeeded: needsContinuation
       });
-    } 
+    }
 
     console.log("calculated score: " + score);
     return score;
+  }
+
+  updateScores(diceStates) {
+    this.setState({ diceStates: diceStates });
   }
 
   render() {
@@ -127,8 +131,25 @@ export class GameBoard extends React.Component {
             continuationNeeded={this.state.continuationNeeded}
             firstThrow={this.state.firstThrow}
             canPass={this.state.canPass}
-            canTakeScores={verifyAtLeastOneDiceIsSelected(this.state.diceStates)}
+            canTakeScores={verifyAtLeastOneDiceIsSelected(
+              this.state.diceStates
+            )}
           />
+
+          <Popover
+            content={
+              <DebugTool
+                diceStates={this.state.diceStates}
+                onUpdate={diceStates => this.updateScores(diceStates)}
+              />
+            }
+            trigger="click"
+            placement="bottom"
+          >
+            <span style={{ cursor: "pointer" }}>
+              <i className="material-icons">bug_report</i>
+            </span>
+          </Popover>
         </Col>
         <Col span="9" />
       </Row>
