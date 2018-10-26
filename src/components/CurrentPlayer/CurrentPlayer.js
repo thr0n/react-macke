@@ -12,8 +12,8 @@ export const CurrentPlayer = props => {
           <Avatar icon="user" style={{ marginRight: "5px" }} />
           {props.playerName ? props.playerName : "..."} ist dran.
         </p>
-        <p>Aktueller Punktestand: {props.overallScore}</p>
         <p>Punkte in in dieser Runde: {props.currentScore}</p>
+        <p>Punkte insgesamt: {props.overallScore}</p>
       </Card>
     </div>
   );

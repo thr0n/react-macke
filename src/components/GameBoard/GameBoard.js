@@ -15,10 +15,12 @@ import { DebugTool } from "../DebugTool/DebugTool";
 
 const initialState = {
   currentScore: 0,
+  playerScore: 0,
   continuationNeeded: false,
   firstThrow: true,
   thrown: false,
   canPass: true,
+  canFinish: false,
   validSelection: false,
   diceStates: [
     { keepValue: false, taken: false, score: 1 },
@@ -46,17 +48,22 @@ export class GameBoard extends React.Component {
   throwInvalidDiceSelectionMessage = () => {
     notification.open({
       message: "Ungültige Auswahl",
-      description: "Du musst mindestens eine 1 oder eine 5 auswählen. Wählst du zusätzlich eine " + 
-      "andere Augenzahl, muss diese genau drei mal ausgewählt sein!"
+      description:
+        "Du musst mindestens eine 1 oder eine 5 auswählen. Wählst du zusätzlich eine " +
+        "andere Augenzahl, muss diese genau drei mal ausgewählt sein!"
     });
   };
+
+  throwContinuationNeededMessage = () => {
+    message.warning("Anschluss! Du musst weiterspielen!");
+  }
 
   rollDices() {
     const generateNewValue = () => Math.floor(Math.random() * 6) + 1;
     const currentStates = this.state.diceStates;
 
     if (this.state.continuationNeeded) {
-      currentStates.forEach((state) => {
+      currentStates.forEach(state => {
         state.score = generateNewValue();
         state.keepValue = false;
         state.taken = false;
@@ -92,14 +99,13 @@ export class GameBoard extends React.Component {
 
   takeScores() {
     const nextState = processTakeScores(this.state);
-    console.log(nextState);
 
     if (!nextState.validSelection && !nextState.continuationNeeded) {
-      this.throwInvalidDiceSelectionMessage()
+      this.throwInvalidDiceSelectionMessage();
     }
 
     if (nextState.continuationNeeded) {
-      message.warning("Anschluss! Du musst weiterspielen!");
+      this.throwContinuationNeededMessage();
     }
 
     this.setState(nextState);
@@ -109,6 +115,11 @@ export class GameBoard extends React.Component {
     this.setState({ diceStates: diceStates });
   }
 
+  finishMove() {
+    const nextState = processFinishMove(this.state);
+    this.setState(nextState);
+  };
+
   render() {
     return (
       <Row>
@@ -116,7 +127,7 @@ export class GameBoard extends React.Component {
         <Col span="6">
           <CurrentPlayer
             playerName="Hendrik"
-            overallScore={0}
+            overallScore={this.state.playerScore}
             currentScore={this.state.currentScore}
           />
           <div className="dice-container">
@@ -137,11 +148,12 @@ export class GameBoard extends React.Component {
           <ActionContainer
             rollDices={() => this.rollDices()}
             onTakeScores={() => this.takeScores()}
-            onFinishMove={() => processFinishMove()}
+            onFinishMove={() => this.finishMove()}
             continuationNeeded={this.state.continuationNeeded}
             firstThrow={this.state.firstThrow}
             thrown={this.state.thrown}
             canPass={this.state.canPass}
+            canFinish={this.state.canFinish}
             canTakeScores={verifyAtLeastOneDiceIsSelected(
               this.state.diceStates
             )}

@@ -5,7 +5,7 @@ import {
 
 describe("GameEngine", () => {
 
-    it("should return 1000 points for 'the lower street'", () => {
+    it("should return 2000 points for 'the lower street'", () => {
         const testState = {
             currentScore: 0,
             diceStates: [
@@ -17,10 +17,10 @@ describe("GameEngine", () => {
             ]
         }
         const result = processTakeScores(testState);
-        expect(result.currentScore).toBe(1000);
+        expect(result.currentScore).toBe(2000);
     })
 
-    it("should return 1000 points for 'the upper street'", () => {
+    it("should return 2000 points for 'the upper street'", () => {
         const testState = {
             currentScore: 0,
             diceStates: [
@@ -32,7 +32,7 @@ describe("GameEngine", () => {
             ]
         }
         const result = processTakeScores(testState);
-        expect(result.currentScore).toBe(1000);
+        expect(result.currentScore).toBe(2000);
     })
 
     it("should return 100 points for a single 1", () => {

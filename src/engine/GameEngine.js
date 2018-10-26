@@ -37,8 +37,10 @@ export const diceCompositionIsValid = thrownDices => {
 const verifyAdditionalSpotsAreSelectedExactlyThreeTimes = additionalSpots => {
     additionalSpots = additionalSpots.filter(spot => spot !== 0);
 
+    const additionalSelectedSpots = mapDiceStateListToArray(additionalSpots)
+
     if (additionalSpots.length > 0) {
-        const filtered = additionalSpots.filter(score => score === 3);
+        const filtered = additionalSelectedSpots.filter(score => score === 3);
         return filtered.length > 0;
     }
     return true;
@@ -126,13 +128,6 @@ const markAsTaken = selectedDices => {
     return selectedDices.map(dice => (dice.taken = true));
 };
 
-/*
- * TODO: 
- * Write a function that takes the whole game state, calculates the scores
- * and decides which actions can be performed next.
- * 
- * Implement other functions, that are able to handle "Zug beenden" and "Passen"
- */
 export const processTakeScores = gameState => {
     const diceStates = gameState.diceStates;
     const selectedDices = getTakenDices(gameState.diceStates);
@@ -158,10 +153,25 @@ export const processTakeScores = gameState => {
         ...nextState,
         currentScore: gameState.currentScore + calculateScores(scoreList),
         thrown: false,
-        continuationNeeded: continuationNeeded(diceStates)
+        continuationNeeded: continuationNeeded(diceStates),
+        canFinish: !continuationNeeded(diceStates)
     };
 };
 
-export const processFinishMove = () => {
-    throw new Error("unimplemented!");
+export const processFinishMove = (gameState) => {
+    const { currentScore, playerScore } = gameState;
+
+    let nextState = { ...gameState,
+        playerScore: playerScore + currentScore,
+        currentScore: 0,
+        thrown: false,
+        firstThrow: true,
+        canFinish: false,
+    };
+
+    return nextState
 };
+
+export const processPass = () => {
+    
+}
