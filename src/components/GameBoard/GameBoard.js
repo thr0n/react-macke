@@ -47,7 +47,7 @@ export class GameBoard extends React.Component {
     notification.open({
       message: "Ungültige Auswahl",
       description: "Du musst mindestens eine 1 oder eine 5 auswählen. Wählst du zusätzlich eine " + 
-      "andere Augenzahl, muss diese mindestens drei mal ausgewählt sein!"
+      "andere Augenzahl, muss diese genau drei mal ausgewählt sein!"
     });
   };
 

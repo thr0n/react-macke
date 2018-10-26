@@ -20,7 +20,8 @@
     }
 
     &.used {
-        box-shadow: 0px 0px 2px 2px lightcoral;        
+        box-shadow: 0px 0px 2px 2px lightcoral;     
+        cursor: not-allowed;   
     }
 
     &.not-selectable {
