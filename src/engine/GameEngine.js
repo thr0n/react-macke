@@ -10,9 +10,6 @@ const mapDiceStateListToArray = (diceStates) => {
 const diceSelectionIsStreet = (scoreList) => {
     const lowerStreet = JSON.stringify(scoreList) === JSON.stringify([1, 1, 1, 1, 1, 0]);
     const upperStreet = JSON.stringify(scoreList) === JSON.stringify([0, 1, 1, 1, 1, 1]);
-
-    debugger
-
     return lowerStreet || upperStreet;
 }
 
@@ -166,10 +163,9 @@ export const processTakeScores = (gameState) => {
 
     markAsTaken(selectedDices);
 
-    // TODO force player to throw the dices after selection!
-
     return { ...nextState,
         currentScore: gameState.currentScore + calculateScores(scoreList),
+        thrown: false
     };
 }
 
