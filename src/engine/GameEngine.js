@@ -82,13 +82,13 @@ const calculateScores = (scoreList) => {
             currentScore += 1000;
         } else if (score === 4) {
             console.log("four of a kind:" + (index + 1) * 100);
-            score += (index +1) * 100
+            score += (index + 1) * 100
         } else if (score === 3) {
             console.log("three of a kind: " + (index + 1) * 100);
-            score += (index +1) * 100
+            score += (index + 1) * 100
         } else if (score === 2) {
             console.log("index = " + index)
-            console.log("val = " + score )
+            console.log("val = " + score)
             console.log("hm... nur 2 -> " + (index + 1) * 10 * 2)
 
             // TODO: shouldn't be hard coded
@@ -111,6 +111,34 @@ const calculateScores = (scoreList) => {
     return currentScore;
 }
 
+const handleStreet = (selectedDices, currentScore, nextState) => {
+    selectedDices.map((dice) => dice.taken = true);
+    nextState = { ...nextState,
+        continuationNeeded: true,
+        thrown: false,
+        firstThrow: true,
+        currentScore: currentScore + 1000
+    }
+    return nextState;
+}
+
+const handleInvalidSelection = (diceStates, nextState) => {
+    diceStates.forEach((dice) => {
+        if (dice.keepValue && !dice.taken) {
+            dice.keepValue = false;
+        }
+    });
+
+    nextState = { ...nextState,
+        diceStates
+    }
+    return nextState;
+}
+
+const markAsTaken = (selectedDices) => {
+    return selectedDices.map((dice) => dice.taken = true);
+}
+
 /*
  * TODO: 
  * Write a function that takes the whole game state, calculates the scores
@@ -119,50 +147,30 @@ const calculateScores = (scoreList) => {
  * Implement other functions, that are able to handle "Zug beenden" and "Passen"
  */
 export const processTakeScores = (gameState) => {
-    let nextState = gameState;
-
     const diceStates = gameState.diceStates;
     const selectedDices = getTakenDices(gameState.diceStates);
     const scoreList = mapDiceStateListToArray(selectedDices);
     const validSelection = diceSelectionIsValid(selectedDices);
 
-    nextState = { ...nextState,
+    let nextState = { ...gameState,
         validSelection
     };
 
     if (diceSelectionIsStreet(scoreList)) {
-        selectedDices.map((dice) => dice.taken = true);
-        nextState = { ...nextState,
-            continuationNeeded: true,
-            thrown: false,
-            firstThrow: true,
-            currentScore: gameState.currentScore + 1000
-        }
-        return nextState;
+        return handleStreet(selectedDices, gameState.currentScore, nextState);
     }
 
     if (!validSelection) {
-        diceStates.forEach((dice) => {
-            if (dice.keepValue && !dice.taken) {
-                dice.keepValue = false;
-            }
-        });
-
-        nextState = { ...nextState,
-            diceStates
-        }
-        return nextState;
+        return handleInvalidSelection(diceStates, nextState);
     }
 
-    selectedDices.map((dice) => dice.taken = true);
+    markAsTaken(selectedDices);
 
-    const currentScore = calculateScores(scoreList)
+    // TODO force player to throw the dices after selection!
 
-    nextState = { ...nextState,
-        currentScore: gameState.currentScore + currentScore
+    return { ...nextState,
+        currentScore: gameState.currentScore + calculateScores(scoreList),
     };
-
-    return nextState;
 }
 
 export const processFinishMove = () => {
