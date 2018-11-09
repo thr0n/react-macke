@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as _ from "lodash";
 import { Col, Row, Popover, notification, message } from "antd";
 import { MackeDice } from "../Dice/MackeDice";
 import { ActionContainer } from "../ActionContainer/ActionContainer";
@@ -6,7 +7,9 @@ import {
   diceCompositionIsValid,
   verifyAtLeastOneDiceIsSelected,
   processTakeScores,
-  processFinishMove
+  processFinishMove,
+  switchToNextPlayer,
+  processInvalidComposition
 } from "../../engine/GameEngine";
 
 import "./GameBoard.scss";
@@ -15,33 +18,59 @@ import { DebugTool } from "../DebugTool/DebugTool";
 
 const initialState = {
   currentScore: 0,
-  playerScore: 0,
   continuationNeeded: false,
   firstThrow: true,
   thrown: false,
-  canPass: true,
   canFinish: false,
   validSelection: false,
   diceStates: [
-    { keepValue: false, taken: false, score: 1 },
-    { keepValue: false, taken: false, score: 3 },
-    { keepValue: false, taken: false, score: 4 },
-    { keepValue: false, taken: false, score: 6 },
-    { keepValue: false, taken: false, score: 2 }
-    // { keepValue: false, taken: false, score: 5 }
+    {
+      keepValue: false,
+      taken: false,
+      score: 1
+    },
+    {
+      keepValue: false,
+      taken: false,
+      score: 3
+    },
+    {
+      keepValue: false,
+      taken: false,
+      score: 4
+    },
+    {
+      keepValue: false,
+      taken: false,
+      score: 6
+    },
+    {
+      keepValue: false,
+      taken: false,
+      score: 2
+    }
   ]
 };
 
 export class GameBoard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = initialState;
+
+    const init = _.cloneDeep(initialState);
+
+    this.state = {
+      ...init,
+      players: this.props.players.map(player => {
+        return { player: player, currentScore: 0, overallScore: 0 };
+      }),
+      currentPlayerId: 0
+    };
   }
 
-  throwInvalidDiceCompositionMessage = () => {
+  throwInvalidDiceCompositionMessage = nextPlayer => {
     notification.open({
       message: "Ungültiger Wurf",
-      description: "Keiner der Würfel hat den Wert 1 oder 5."
+      description: "Keiner der Würfel hat den Wert 1 oder 5. " + nextPlayer + " ist an der Reihe!"
     });
   };
 
@@ -56,7 +85,7 @@ export class GameBoard extends React.Component {
 
   throwContinuationNeededMessage = () => {
     message.warning("Anschluss! Du musst weiterspielen!");
-  }
+  };
 
   rollDices() {
     const generateNewValue = () => Math.floor(Math.random() * 6) + 1;
@@ -82,19 +111,19 @@ export class GameBoard extends React.Component {
       diceStates: currentStates
     });
 
-    if (diceCompositionIsValid(this.state.diceStates)) {
-      console.log("Valid throw!");
-    } else {
-      console.log("Invalid throw!");
-      this.throwInvalidDiceCompositionMessage();
-      this.setState(initialState);
+    if (!diceCompositionIsValid(this.state.diceStates)) {
+      const nextState = processInvalidComposition(this.state);
+      this.throwInvalidDiceCompositionMessage(this.state.players[nextState.currentPlayerId].player)
+      this.setState(nextState);
     }
   }
 
   toggleKeepValue(diceId, keepValue) {
     const diceStates = this.state.diceStates;
     diceStates[diceId].keepValue = keepValue;
-    this.setState({ diceStates });
+    this.setState({
+      diceStates
+    });
   }
 
   takeScores() {
@@ -112,13 +141,15 @@ export class GameBoard extends React.Component {
   }
 
   updateScores(diceStates) {
-    this.setState({ diceStates: diceStates });
+    this.setState({
+      diceStates: diceStates
+    });
   }
 
   finishMove() {
     const nextState = processFinishMove(this.state);
-    this.setState(nextState);
-  };
+    this.setState(..._.cloneDeep(initialState), nextState);
+  }
 
   render() {
     return (
@@ -126,11 +157,11 @@ export class GameBoard extends React.Component {
         <Col span="9" />
         <Col span="6">
           <CurrentPlayer
-            playerName="Hendrik"
-            overallScore={this.state.playerScore}
+            currentPlayer={this.state.players[this.state.currentPlayerId]}
             currentScore={this.state.currentScore}
-          />
+          />{" "}
           <div className="dice-container">
+            {" "}
             {this.state.diceStates.map((diceState, index) => {
               return (
                 <MackeDice
@@ -143,8 +174,8 @@ export class GameBoard extends React.Component {
                   onClick={this.toggleKeepValue.bind(this)}
                 />
               );
-            })}
-          </div>
+            })}{" "}
+          </div>{" "}
           <ActionContainer
             rollDices={() => this.rollDices()}
             onTakeScores={() => this.takeScores()}
@@ -152,13 +183,12 @@ export class GameBoard extends React.Component {
             continuationNeeded={this.state.continuationNeeded}
             firstThrow={this.state.firstThrow}
             thrown={this.state.thrown}
-            canPass={this.state.canPass}
             canFinish={this.state.canFinish}
+            canPass={!this.state.thrown && this.state.currentScore === 0}
             canTakeScores={verifyAtLeastOneDiceIsSelected(
               this.state.diceStates
             )}
           />
-
           <Popover
             content={
               <DebugTool
@@ -169,11 +199,15 @@ export class GameBoard extends React.Component {
             trigger="click"
             placement="bottom"
           >
-            <span style={{ cursor: "pointer" }}>
-              <i className="material-icons">bug_report</i>
-            </span>
-          </Popover>
-        </Col>
+            <span
+              style={{
+                cursor: "pointer"
+              }}
+            >
+              <i className="material-icons"> bug_report </i>{" "}
+            </span>{" "}
+          </Popover>{" "}
+        </Col>{" "}
         <Col span="9" />
       </Row>
     );

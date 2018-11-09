@@ -158,20 +158,94 @@ export const processTakeScores = gameState => {
     };
 };
 
-export const processFinishMove = (gameState) => {
-    const { currentScore, playerScore } = gameState;
-
-    let nextState = { ...gameState,
-        playerScore: playerScore + currentScore,
+export const processInvalidComposition = gameState => {
+    const {
+        currentPlayerId
+    } = gameState;
+    const nextState = {
+        currentPlayerId: switchToNextPlayer(currentPlayerId, gameState.players.length),
         currentScore: 0,
-        thrown: false,
+        continuationNeeded: false,
         firstThrow: true,
+        thrown: false,
+        canPass: true,
         canFinish: false,
+        validSelection: false,
+        diceStates: [{
+                keepValue: false,
+                taken: false,
+                score: 1
+            },
+            {
+                keepValue: false,
+                taken: false,
+                score: 3
+            },
+            {
+                keepValue: false,
+                taken: false,
+                score: 4
+            },
+            {
+                keepValue: false,
+                taken: false,
+                score: 6
+            },
+            {
+                keepValue: false,
+                taken: false,
+                score: 2
+            }
+        ]
+    }
+    return nextState;
+}
+
+export const switchToNextPlayer = (currentPlayerId, numberOfPlayers) => {
+    return (currentPlayerId === numberOfPlayers - 1) ? 0 : currentPlayerId + 1
+}
+
+export const processFinishMove = (gameState) => {
+    const {
+        currentPlayerId
+    } = gameState;
+    gameState.players[currentPlayerId].overallScore += gameState.currentScore;
+
+    const nextState = {
+        currentPlayerId: switchToNextPlayer(currentPlayerId, gameState.players.length),
+        currentScore: 0,
+        canFinish: false,
+        diceStates: [{
+                keepValue: false,
+                taken: false,
+                score: 1
+            },
+            {
+                keepValue: false,
+                taken: false,
+                score: 3
+            },
+            {
+                keepValue: false,
+                taken: false,
+                score: 4
+            },
+            {
+                keepValue: false,
+                taken: false,
+                score: 6
+            },
+            {
+                keepValue: false,
+                taken: false,
+                score: 2
+            }
+        ]
     };
 
     return nextState
 };
 
 export const processPass = () => {
-    
+
 }
