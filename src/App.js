@@ -10,6 +10,7 @@ import { PlayerManger } from "./components/PlayerManager/PlayerManager";
 class App extends Component {
   state = {
     players: [
+      "Hendrik", "Jessi", "Werner"
     ]
   };
 
@@ -28,11 +29,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Row
-          style={{
-            marginTop: "3%"
-          }}
-        >
+        <Row style={{marginTop: "3%"}}>
           <Col span="8" />
           <Col span="8">
             <img src={logo} alt="React-Macke" />

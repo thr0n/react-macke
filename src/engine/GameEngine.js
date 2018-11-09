@@ -78,7 +78,7 @@ const getScoresBy = (dots, count) => {
         case 4:
             return (dots === 1) ? 1100 : 550
         case 3:
-            return (dots === 1) ? 1100 : dots * 100;
+            return (dots === 1) ? 1000 : dots * 100;
         case 2:
             return (dots === 1) ? 200 : 100;
         case 1:
@@ -162,6 +162,9 @@ export const processInvalidComposition = gameState => {
     const {
         currentPlayerId
     } = gameState;
+
+    gameState.players[currentPlayerId].moves.push("X")
+
     const nextState = {
         currentPlayerId: switchToNextPlayer(currentPlayerId, gameState.players.length),
         currentScore: 0,
@@ -209,11 +212,25 @@ export const processFinishMove = (gameState) => {
     const {
         currentPlayerId
     } = gameState;
-    gameState.players[currentPlayerId].overallScore += gameState.currentScore;
 
-    const nextState = {
+    const newOverallScore = gameState.players[currentPlayerId].overallScore += gameState.currentScore;
+    const gameOver = newOverallScore >= 5500;
+
+    gameState.players[currentPlayerId].overallScore = newOverallScore;
+    gameState.players[currentPlayerId].moves.push(gameState.players[currentPlayerId].overallScore)
+
+    if (gameOver) {
+        return {
+            gameOver,
+            thrown: true,
+            canFinish: false
+        }
+    }
+
+    return {
         currentPlayerId: switchToNextPlayer(currentPlayerId, gameState.players.length),
         currentScore: 0,
+        gameOver,
         canFinish: false,
         diceStates: [{
                 keepValue: false,
@@ -242,10 +259,16 @@ export const processFinishMove = (gameState) => {
             }
         ]
     };
-
-    return nextState
 };
 
-export const processPass = () => {
+export const processPass = (gameState) => {
+    const {
+        currentPlayerId
+    } = gameState;
 
+    gameState.players[currentPlayerId].moves.push("P")
+
+    return {
+        currentPlayerId: switchToNextPlayer(currentPlayerId, gameState.players.length)
+    }
 }

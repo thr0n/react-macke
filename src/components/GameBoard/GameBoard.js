@@ -8,16 +8,18 @@ import {
   verifyAtLeastOneDiceIsSelected,
   processTakeScores,
   processFinishMove,
-  switchToNextPlayer,
-  processInvalidComposition
+  processInvalidComposition,
+  processPass
 } from "../../engine/GameEngine";
 
 import "./GameBoard.scss";
 import { CurrentPlayer } from "../CurrentPlayer/CurrentPlayer";
 import { DebugTool } from "../DebugTool/DebugTool";
+import { ScoreBoard } from "../ScoreBoard";
 
 const initialState = {
   currentScore: 0,
+  gameOver: false,
   continuationNeeded: false,
   firstThrow: true,
   thrown: false,
@@ -61,7 +63,7 @@ export class GameBoard extends React.Component {
     this.state = {
       ...init,
       players: this.props.players.map(player => {
-        return { player: player, currentScore: 0, overallScore: 0 };
+        return { player: player, overallScore: 0, moves: [] };
       }),
       currentPlayerId: 0
     };
@@ -70,7 +72,10 @@ export class GameBoard extends React.Component {
   throwInvalidDiceCompositionMessage = nextPlayer => {
     notification.open({
       message: "Ungültiger Wurf",
-      description: "Keiner der Würfel hat den Wert 1 oder 5. " + nextPlayer + " ist an der Reihe!"
+      description:
+        "Keiner der Würfel hat den Wert 1 oder 5. " +
+        nextPlayer +
+        " ist an der Reihe!"
     });
   };
 
@@ -82,6 +87,14 @@ export class GameBoard extends React.Component {
         "andere Augenzahl, muss diese genau drei mal ausgewählt sein!"
     });
   };
+
+  throwWinnerMessage = winner => {
+    notification.open({
+      message: "Gratulation!",
+      description: "Das Spiel ist zu Ende. " + winner + " hat das Spiel gewonnen!",
+      duration: 0
+    })
+  }
 
   throwContinuationNeededMessage = () => {
     message.warning("Anschluss! Du musst weiterspielen!");
@@ -113,7 +126,9 @@ export class GameBoard extends React.Component {
 
     if (!diceCompositionIsValid(this.state.diceStates)) {
       const nextState = processInvalidComposition(this.state);
-      this.throwInvalidDiceCompositionMessage(this.state.players[nextState.currentPlayerId].player)
+      this.throwInvalidDiceCompositionMessage(
+        this.state.players[nextState.currentPlayerId].player
+      );
       this.setState(nextState);
     }
   }
@@ -148,6 +163,16 @@ export class GameBoard extends React.Component {
 
   finishMove() {
     const nextState = processFinishMove(this.state);
+
+    if (nextState.gameOver) {
+      this.throwWinnerMessage(this.state.players[this.state.currentPlayerId].player)
+    }
+
+    this.setState(..._.cloneDeep(initialState), nextState);
+  }
+
+  pass() {
+    const nextState = processPass(this.state);
     this.setState(..._.cloneDeep(initialState), nextState);
   }
 
@@ -180,6 +205,7 @@ export class GameBoard extends React.Component {
             rollDices={() => this.rollDices()}
             onTakeScores={() => this.takeScores()}
             onFinishMove={() => this.finishMove()}
+            onPass={() => this.pass()}
             continuationNeeded={this.state.continuationNeeded}
             firstThrow={this.state.firstThrow}
             thrown={this.state.thrown}
@@ -207,6 +233,7 @@ export class GameBoard extends React.Component {
               <i className="material-icons"> bug_report </i>{" "}
             </span>{" "}
           </Popover>{" "}
+          <ScoreBoard players={this.state.players}/>
         </Col>{" "}
         <Col span="9" />
       </Row>

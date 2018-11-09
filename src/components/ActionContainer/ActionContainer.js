@@ -5,7 +5,11 @@ export class ActionContainer extends React.Component {
   render() {
     return (
       <div className="action-container">
-        <Button type="primary" onClick={() => this.props.rollDices()} disabled={this.props.thrown}>
+        <Button
+          type="primary"
+          onClick={() => this.props.rollDices()}
+          disabled={this.props.thrown}
+        >
           Würfeln{" "}
         </Button>{" "}
         <Button
@@ -22,7 +26,11 @@ export class ActionContainer extends React.Component {
         >
           Zug beenden{" "}
         </Button>{" "}
-        <Button type="secondary" disabled={!this.props.canPass}>
+        <Button
+          type="secondary"
+          disabled={!this.props.canPass}
+          onClick={() => this.props.onPass()}
+        >
           Passen{" "}
         </Button>{" "}
       </div>

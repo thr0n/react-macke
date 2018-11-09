@@ -67,6 +67,30 @@ describe("GameEngine", () => {
         expect(result.currentScore).toBe(150);
     })
 
+    it("should return 1000 for three times 1", () => {
+        const testState = {
+            currentScore: 0,
+            diceStates: [{
+                    score: 1,
+                    keepValue: true,
+                    taken: false
+                },
+                {
+                    score: 1,
+                    keepValue: true,
+                    taken: false
+                },
+                {
+                    score: 1,
+                    keepValue: true,
+                    taken: false
+                },
+            ]
+        }
+        const result = processTakeScores(testState);
+        expect(result.currentScore).toBe(1000);
+    })
+
     it("should return 100 points for two times 5", () => {
         const testState = {
             currentScore: 0,
