@@ -6,6 +6,7 @@ import { GameBoard } from "./components/GameBoard/GameBoard";
 import "./App.css";
 import logo from "./macke-logo.png";
 import { PlayerManger } from "./components/PlayerManager/PlayerManager";
+// import { MackeMenu } from "./components/MackeMenu";
 
 class App extends Component {
   state = {
@@ -19,9 +20,7 @@ class App extends Component {
   };
 
   renderPlayerManager = () => {
-    return (
-        <PlayerManger onSave={players => this.addPlayers(players)} />
-    );
+    return <PlayerManger onSave={players => this.addPlayers(players)} />;
   };
 
   render() {
@@ -29,7 +28,8 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Row style={{marginTop: "3%"}}>
+        {/* <MackeMenu /> */}
+        <Row style={{ marginTop: "3%" }}>
           <Col span="8" />
           <Col span="8">
             <img src={logo} alt="React-Macke" />
