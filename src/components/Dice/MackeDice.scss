@@ -1,6 +1,6 @@
 .macke-dice {
-    height: 30px;
-    width: 30px;
+    height: 50px;
+    width: 50px;
     display: flex;
     background-color: cornsilk;
     justify-content: center;
@@ -8,7 +8,7 @@
     border: 1px solid black;
     cursor: pointer;
     float: left;
-    margin-left: 0.3vw;
+    margin-left: 5px;
     margin-right: 0.3vw;
 
     &.keep {

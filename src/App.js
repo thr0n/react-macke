@@ -29,12 +29,12 @@ class App extends Component {
     return (
       <div className="App">
         {/* <MackeMenu /> */}
-        <Row style={{ marginTop: "3%" }}>
-          <Col span="8" />
-          <Col span="8">
-            <img src={logo} alt="React-Macke" />
+        <Row style={{ marginTop: "20px", marginBottom: "3px" }}>
+          <Col xs={1} xl={8} />
+          <Col xs={22} xl={8}>
+            <img src={logo} alt="React-Macke" width="80%" height="auto"/>
           </Col>{" "}
-          <Col span="8" />
+          <Col xs={1} xl={8} />
         </Row>{" "}
         <Row>
           {players.length === 0 ? (

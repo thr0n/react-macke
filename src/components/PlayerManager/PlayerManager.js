@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Form, Button, Icon, Input } from "antd";
+import { Form, Button, Icon, Input, Row, Col } from "antd";
 
 const FormItem = Form.Item;
 
@@ -29,7 +29,7 @@ class PlayerManagerBase extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.props.onSave(values.players)
+        this.props.onSave(values.players);
       }
     });
   };
@@ -39,11 +39,11 @@ class PlayerManagerBase extends React.Component {
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 4 }
+        sm: { span: 7 }
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 20 }
+        sm: { span: 16 }
       }
     };
     const formItemLayoutWithOutLabel = {
@@ -79,7 +79,7 @@ class PlayerManagerBase extends React.Component {
           })(
             <Input
               placeholder="Spielername"
-              style={{ width: "60%", marginRight: 8 }}
+              style={{ width: "60%" }}
             />
           )}{" "}
           {keys.length > 1 ? (
@@ -95,23 +95,31 @@ class PlayerManagerBase extends React.Component {
     });
 
     return (
-      <div style={{marginTop: "40px", backgroundColor: "lightyellow"}}>
-        <h2>Bitte füge mindestens zwei Spieler hinzu!</h2>
-        <Form onSubmit={this.handleSubmit}>
-          {" "}
-          {formItems}{" "}
-          <FormItem {...formItemLayoutWithOutLabel}>
-            <Button type="dashed" onClick={this.add} style={{ width: "60%" }}>
-              <Icon type="plus" /> Spieler hinzufügen{" "}
-            </Button>{" "}
-          </FormItem>{" "}
-          <FormItem {...formItemLayoutWithOutLabel}>
-            <Button type="primary" htmlType="submit">
-              Starten{" "}
-            </Button>{" "}
-          </FormItem>{" "}
-        </Form>
-      </div>
+        <Row>
+          <Col xs={1} xl={8} />
+          <Col xs={22} xl={8} style={{ border: "solid black 2px" }}>
+            <h2>Ein neues Spiel starten...</h2>
+            <Form onSubmit={this.handleSubmit}>
+              {" "}
+              {formItems}{" "}
+              <FormItem {...formItemLayoutWithOutLabel}>
+                <Button
+                  type="dashed"
+                  onClick={this.add}
+                  style={{ width: "60%" }}
+                >
+                  <Icon type="plus" /> Spieler hinzufügen{" "}
+                </Button>{" "}
+              </FormItem>{" "}
+              <FormItem {...formItemLayoutWithOutLabel}>
+                <Button type="primary" htmlType="submit">
+                  Starten{" "}
+                </Button>{" "}
+              </FormItem>{" "}
+            </Form>
+          </Col>
+          <Col xs={1} xl={8} />
+        </Row>
     );
   }
 }

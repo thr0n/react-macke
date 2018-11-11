@@ -26,13 +26,13 @@ export class ActionContainer extends React.Component {
         >
           Zug beenden{" "}
         </Button>{" "}
-        <Button
+        {/* <Button
           type="secondary"
           disabled={!this.props.canPass}
           onClick={() => this.props.onPass()}
         >
           Passen{" "}
-        </Button>{" "}
+        </Button>{" "} */}
       </div>
     );
   }

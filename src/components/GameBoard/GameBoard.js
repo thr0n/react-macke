@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as _ from "lodash";
+import PropTypes from "prop-types";
 import { Col, Row, Popover, notification, message } from "antd";
 import { MackeDice } from "../Dice/MackeDice";
 import { ActionContainer } from "../ActionContainer/ActionContainer";
@@ -91,10 +92,11 @@ export class GameBoard extends React.Component {
   throwWinnerMessage = winner => {
     notification.open({
       message: "Gratulation!",
-      description: "Das Spiel ist zu Ende. " + winner + " hat das Spiel gewonnen!",
+      description:
+        "Das Spiel ist zu Ende. " + winner + " hat das Spiel gewonnen!",
       duration: 0
-    })
-  }
+    });
+  };
 
   throwContinuationNeededMessage = () => {
     message.warning("Anschluss! Du musst weiterspielen!");
@@ -165,7 +167,9 @@ export class GameBoard extends React.Component {
     const nextState = processFinishMove(this.state);
 
     if (nextState.gameOver) {
-      this.throwWinnerMessage(this.state.players[this.state.currentPlayerId].player)
+      this.throwWinnerMessage(
+        this.state.players[this.state.currentPlayerId].player
+      );
     }
 
     this.setState(..._.cloneDeep(initialState), nextState);
@@ -179,8 +183,8 @@ export class GameBoard extends React.Component {
   render() {
     return (
       <Row>
-        <Col span="9" />
-        <Col span="6">
+        <Col xs={1} xl={8} />
+        <Col xs={22} xl={8}>
           <CurrentPlayer
             currentPlayer={this.state.players[this.state.currentPlayerId]}
             currentScore={this.state.currentScore}
@@ -233,10 +237,14 @@ export class GameBoard extends React.Component {
               <i className="material-icons"> bug_report </i>{" "}
             </span>{" "}
           </Popover>{" "}
-          <ScoreBoard players={this.state.players}/>
+          <ScoreBoard players={this.state.players} />
         </Col>{" "}
-        <Col span="9" />
+        <Col xs={1} xl={8} />
       </Row>
     );
   }
 }
+
+GameBoard.propTypes = {
+  players: PropTypes.arrayOf(PropTypes.string)
+};
