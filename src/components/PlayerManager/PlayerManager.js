@@ -31,9 +31,10 @@ class PlayerManagerBase extends React.Component {
       if (!values.players || values.players.length < 2) {
         notification.open({
           message: "Zu wenig Spieler",
-          description: "Bitte gib mindestens zwei Spieler an (alleine ist Macke echt nicht sooo cool)!"
+          description:
+            "Bitte gib mindestens zwei Spieler an (alleine ist Macke echt nicht sooo cool)!"
         });
-        return 
+        return;
       }
 
       if (!err) {
@@ -44,22 +45,6 @@ class PlayerManagerBase extends React.Component {
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 7 }
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 }
-      }
-    };
-    const formItemLayoutWithOutLabel = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 20, offset: 4 }
-      }
-    };
 
     getFieldDecorator("keys", {
       initialValue: []
@@ -68,12 +53,7 @@ class PlayerManagerBase extends React.Component {
     const keys = getFieldValue("keys");
     const formItems = keys.map((key, index) => {
       return (
-        <FormItem
-          {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-          label={index === 0 ? "Spieler:" : ""}
-          required={false}
-          key={key}
-        >
+        <FormItem required={false} key={key}>
           {" "}
           {getFieldDecorator(`players[${key}]`, {
             validateTrigger: ["onChange", "onBlur"],
@@ -81,15 +61,11 @@ class PlayerManagerBase extends React.Component {
               {
                 required: true,
                 whitespace: true,
-                message: "Bitte gib einen Spielernamen ein oder lösche das Feld."
+                message:
+                  "Bitte gib einen Spielernamen ein oder lösche das Feld."
               }
             ]
-          })(
-            <Input
-              placeholder="Spielername"
-              style={{ width: "60%" }}
-            />
-          )}{" "}
+          })(<Input placeholder="Spielername" style={{ width: "50%" }} />)}{" "}
           {keys.length > 1 ? (
             <Icon
               className="dynamic-delete-button"
@@ -103,31 +79,26 @@ class PlayerManagerBase extends React.Component {
     });
 
     return (
-        <Row>
-          <Col xs={1} xl={8} />
-          <Col xs={22} xl={8}>
-            <h2>Ein neues Spiel starten...</h2>
-            <Form onSubmit={this.handleSubmit}>
-              {" "}
-              {formItems}{" "}
-              <FormItem {...formItemLayoutWithOutLabel}>
-                <Button
-                  type="dashed"
-                  onClick={this.add}
-                  style={{ width: "50%" }}
-                >
-                  <Icon type="plus" /> Spieler hinzufügen{" "}
-                </Button>{" "}
-              </FormItem>{" "}
-              <FormItem {...formItemLayoutWithOutLabel}>
-                <Button type="primary" htmlType="submit">
-                  Starten{" "}
-                </Button>{" "}
-              </FormItem>{" "}
-            </Form>
-          </Col>
-          <Col xs={1} xl={8} />
-        </Row>
+      <Row>
+        <Col xs={1} xl={8} />
+        <Col xs={22} xl={8}>
+          <Form onSubmit={this.handleSubmit}>
+            <h2>Ein neues Spiel starten...</h2> 
+            {formItems}{" "}
+            <FormItem>
+              <Button type="dashed" onClick={this.add} style={{ width: "50%" }}>
+                <Icon type="plus" /> Spieler hinzufügen{" "}
+              </Button>{" "}
+            </FormItem>{" "}
+            <FormItem>
+              <Button type="primary" htmlType="submit">
+                Starten{" "}
+              </Button>{" "}
+            </FormItem>{" "}
+          </Form>
+        </Col>
+        <Col xs={1} xl={8} />
+      </Row>
     );
   }
 }
