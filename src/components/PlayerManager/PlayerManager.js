@@ -97,7 +97,7 @@ class PlayerManagerBase extends React.Component {
     return (
         <Row>
           <Col xs={1} xl={8} />
-          <Col xs={22} xl={8} style={{ border: "solid black 2px" }}>
+          <Col xs={22} xl={8}>
             <h2>Ein neues Spiel starten...</h2>
             <Form onSubmit={this.handleSubmit}>
               {" "}
@@ -106,7 +106,7 @@ class PlayerManagerBase extends React.Component {
                 <Button
                   type="dashed"
                   onClick={this.add}
-                  style={{ width: "60%" }}
+                  style={{ width: "50%" }}
                 >
                   <Icon type="plus" /> Spieler hinzufügen{" "}
                 </Button>{" "}

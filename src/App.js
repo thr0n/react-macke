@@ -11,7 +11,7 @@ import { PlayerManger } from "./components/PlayerManager/PlayerManager";
 class App extends Component {
   state = {
     players: [
-      "Hendrik", "Jessi", "Werner"
+      // "Hendrik", "Jessi", "Werner"
     ]
   };
 
