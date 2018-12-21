@@ -9,7 +9,7 @@ import {
   verifyAtLeastOneDiceIsSelected,
   processTakeScores,
   processFinishMove,
-  processInvalidComposition,
+  processInvalidComposition
 } from "../../engine/GameEngine";
 
 import "./GameBoard.scss";

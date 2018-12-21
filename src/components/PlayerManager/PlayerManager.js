@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Form, Button, Icon, Input, Row, Col } from "antd";
+import { Form, Button, Icon, Input, Row, Col, notification } from "antd";
 
 const FormItem = Form.Item;
 
@@ -28,6 +28,14 @@ class PlayerManagerBase extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
+      if (!values.players || values.players.length < 2) {
+        notification.open({
+          message: "Zu wenig Spieler",
+          description: "Bitte gib mindestens zwei Spieler an (alleine ist Macke echt nicht sooo cool)!"
+        });
+        return 
+      }
+
       if (!err) {
         this.props.onSave(values.players);
       }
@@ -73,7 +81,7 @@ class PlayerManagerBase extends React.Component {
               {
                 required: true,
                 whitespace: true,
-                message: "Plase input player's name or delete this field."
+                message: "Bitte gib einen Spielernamen ein oder lösche das Feld."
               }
             ]
           })(
