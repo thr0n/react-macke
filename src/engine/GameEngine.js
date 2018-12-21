@@ -171,7 +171,6 @@ export const processInvalidComposition = gameState => {
         continuationNeeded: false,
         firstThrow: true,
         thrown: false,
-        canPass: true,
         canFinish: false,
         validSelection: false,
         diceStates: [{
@@ -260,15 +259,3 @@ export const processFinishMove = (gameState) => {
         ]
     };
 };
-
-export const processPass = (gameState) => {
-    const {
-        currentPlayerId
-    } = gameState;
-
-    gameState.players[currentPlayerId].moves.push("P")
-
-    return {
-        currentPlayerId: switchToNextPlayer(currentPlayerId, gameState.players.length)
-    }
-}

@@ -10,7 +10,6 @@ import {
   processTakeScores,
   processFinishMove,
   processInvalidComposition,
-  processPass
 } from "../../engine/GameEngine";
 
 import "./GameBoard.scss";
@@ -175,11 +174,6 @@ export class GameBoard extends React.Component {
     this.setState(..._.cloneDeep(initialState), nextState);
   }
 
-  pass() {
-    const nextState = processPass(this.state);
-    this.setState(..._.cloneDeep(initialState), nextState);
-  }
-
   render() {
     return (
       <Row>
@@ -209,12 +203,10 @@ export class GameBoard extends React.Component {
             rollDices={() => this.rollDices()}
             onTakeScores={() => this.takeScores()}
             onFinishMove={() => this.finishMove()}
-            onPass={() => this.pass()}
             continuationNeeded={this.state.continuationNeeded}
             firstThrow={this.state.firstThrow}
             thrown={this.state.thrown}
             canFinish={this.state.canFinish}
-            canPass={!this.state.thrown && this.state.currentScore === 0}
             canTakeScores={verifyAtLeastOneDiceIsSelected(
               this.state.diceStates
             )}
