@@ -1,32 +1,44 @@
 import * as React from "react";
 import { Button } from "antd";
 
-export class ActionContainer extends React.Component {
-  render() {
+export const ActionContainer = props => {
+  const renderGameActions = () => {
     return (
-      <div className="action-container">
+      <div>
         <Button
           type="primary"
-          onClick={() => this.props.rollDices()}
-          disabled={this.props.thrown}
+          onClick={() => props.rollDices()}
+          disabled={props.thrown}
         >
           Würfeln{" "}
         </Button>{" "}
         <Button
           type="primary"
-          disabled={!this.props.canTakeScores}
-          onClick={() => this.props.onTakeScores()}
+          disabled={!props.canTakeScores}
+          onClick={() => props.onTakeScores()}
         >
           Punkte nehmen{" "}
         </Button>{" "}
         <Button
           type="primary"
-          disabled={!this.props.canFinish}
-          onClick={() => this.props.onFinishMove()}
+          disabled={!props.canFinish}
+          onClick={() => props.onFinishMove()}
         >
           Zug beenden{" "}
         </Button>{" "}
       </div>
     );
-  }
-}
+  };
+
+  const renderRestartButton = () => {
+    return (
+      <Button type="primary" onClick={() => props.restart()} icon="reload" >Spiel neu starten</Button>
+    );
+  };
+
+  return (
+    <div className="action-container">
+      {props.gameOver ? renderRestartButton() : renderGameActions()}
+    </div>
+  );
+};

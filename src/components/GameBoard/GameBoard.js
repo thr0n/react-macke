@@ -69,6 +69,16 @@ export class GameBoard extends React.Component {
     };
   }
 
+  restartGame = () => {
+    this.setState({
+      ..._.cloneDeep(initialState),
+      players: this.props.players.map(player => {
+        return { player: player, overallScore: 0, moves: [] };
+      }),
+      currentPlayerId: 0
+    })
+  }
+
   throwInvalidDiceCompositionMessage = nextPlayer => {
     notification.open({
       message: "Ungültiger Wurf",
@@ -210,6 +220,8 @@ export class GameBoard extends React.Component {
             canTakeScores={verifyAtLeastOneDiceIsSelected(
               this.state.diceStates
             )}
+            gameOver={this.state.gameOver}
+            restart={this.restartGame}
           />
           <Popover
             content={
