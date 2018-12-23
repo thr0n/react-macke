@@ -163,7 +163,7 @@ export const processInvalidComposition = gameState => {
         currentPlayerId
     } = gameState;
 
-    gameState.players[currentPlayerId].moves.push("X")
+    gameState.players[currentPlayerId].moves.push("–")
 
     const nextState = {
         currentPlayerId: switchToNextPlayer(currentPlayerId, gameState.players.length),
@@ -213,7 +213,7 @@ export const processFinishMove = (gameState) => {
     } = gameState;
 
     const newOverallScore = gameState.players[currentPlayerId].overallScore += gameState.currentScore;
-    const gameOver = newOverallScore >= 5500;
+    const gameOver = newOverallScore >= 5050; // TODO: remove this magic number
 
     gameState.players[currentPlayerId].overallScore = newOverallScore;
     gameState.players[currentPlayerId].moves.push(gameState.players[currentPlayerId].overallScore)
