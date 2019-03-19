@@ -96,7 +96,7 @@ const getScoresBy = (dots, count) => {
 const calculateScores = scoreList => {
     let currentScore = 0;
 
-    scoreList.map((count, dots) => {
+    scoreList.forEach((count, dots) => {
         currentScore += getScoresBy(dots, count);
     });
 

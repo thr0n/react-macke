@@ -11,7 +11,7 @@ import { Logo } from "./components/Logo";
 class App extends React.Component {
   state = {
     players: [
-      "Hendrik", "Jessi", "Werner"
+      // "Hendrik", "Jessi", "Werner"
     ],
     started: false
   };
