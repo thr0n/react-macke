@@ -1,106 +1,82 @@
 import * as React from "react";
-import { Form, Button, Icon, Input, Row, Col, notification } from "antd";
+import Grid from "@material-ui/core/Grid";
+import Fab from "@material-ui/core/Fab";
 
-const FormItem = Form.Item;
+import { PlayerEntry } from "./PlayerEntry";
 
-class PlayerManagerBase extends React.Component {
-  add = () => {
-    const { form } = this.props;
-    const keys = form.getFieldValue("keys");
-    const nextKeys = keys.concat(keys.length);
-    form.setFieldsValue({
-      keys: nextKeys
-    });
-  };
+export class PlayerManager extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      players: [""]
+    };
+  }
 
-  remove = k => {
-    const { form } = this.props;
-    const keys = form.getFieldValue("keys");
-    if (keys.length === 1) {
-      return;
+  addPlayer = (playerName, index) => {
+    const currentPlayers = this.state.players;
+
+    currentPlayers[index] = playerName;
+    if (this.shouldAddNewPlaceHolder(currentPlayers, index, playerName)) {
+      currentPlayers.push("");
+    } else if (playerName === "") {
+      this.deletePlayer(index);
     }
 
-    form.setFieldsValue({
-      keys: keys.filter(key => key !== k)
-    });
+    this.setState({ players: currentPlayers });
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!values.players || values.players.length < 2) {
-        notification.open({
-          message: "Zu wenig Spieler",
-          description:
-            "Bitte gib mindestens zwei Spieler an (alleine ist Macke echt nicht sooo cool)!"
-        });
-        return;
-      }
-
-      if (!err) {
-        this.props.onSave(values.players);
-      }
-    });
+  deletePlayer = index => {
+    if (index > 0 || this.state.players.length > 1) {
+      const currentPlayers = this.state.players;
+      currentPlayers.splice(index, 1);
+      this.setState({ players: currentPlayers });
+    } else {
+      this.setState({ players: "" });
+    }
   };
+
+  getPlayers = players => {
+    return players.filter(player => player !== "");
+  }
+
+  getPlayerCount = players => {
+    return this.getPlayers(players).length;
+  };
+
+  shouldAddNewPlaceHolder(currentPlayers, index, playerName) {
+    return (
+      currentPlayers[index + 1] === undefined &&
+      playerName !== "" &&
+      currentPlayers.length < 4
+    );
+  }
 
   render() {
-    const { getFieldDecorator, getFieldValue } = this.props.form;
-
-    getFieldDecorator("keys", {
-      initialValue: []
-    });
-
-    const keys = getFieldValue("keys");
-    const formItems = keys.map((key, index) => {
-      return (
-        <FormItem required={false} key={key}>
-          {" "}
-          {getFieldDecorator(`players[${key}]`, {
-            validateTrigger: ["onChange", "onBlur"],
-            rules: [
-              {
-                required: true,
-                whitespace: true,
-                message:
-                  "Bitte gib einen Spielernamen ein oder lösche das Feld."
-              }
-            ]
-          })(<Input placeholder="Spielername" style={{ width: "50%" }} />)}{" "}
-          {keys.length > 1 ? (
-            <Icon
-              className="dynamic-delete-button"
-              type="minus-circle-o"
-              disabled={keys.length === 1}
-              onClick={() => this.remove(key)}
-            />
-          ) : null}
-        </FormItem>
-      );
-    });
-
     return (
-      <Row>
-        <Col xs={1} xl={8} />
-        <Col xs={22} xl={8}>
-          <Form onSubmit={this.handleSubmit}>
-            <h2>Ein neues Spiel starten...</h2> 
-            {formItems}{" "}
-            <FormItem>
-              <Button type="dashed" onClick={this.add} style={{ width: "50%" }}>
-                <Icon type="plus" /> Spieler hinzufügen{" "}
-              </Button>{" "}
-            </FormItem>{" "}
-            <FormItem>
-              <Button type="primary" htmlType="submit">
-                Starten{" "}
-              </Button>{" "}
-            </FormItem>{" "}
-          </Form>
-        </Col>
-        <Col xs={1} xl={8} />
-      </Row>
+      <Grid container spacing={16} direction="column" justify="flex-start">
+        <Grid item xs={12}>
+          {this.state.players.map((player, index) => (
+            <PlayerEntry
+              key={index}
+              playerName={player}
+              onChange={playerName => this.addPlayer(playerName, index)}
+              onDelete={() => this.deletePlayer(index)}
+            />
+          ))}
+        </Grid>
+
+        <Grid container direction="row" justify="flex-end">
+          <Grid item>
+            <Fab
+              color="primary"
+              disabled={this.getPlayerCount(this.state.players) < 2}
+              onClick={() => this.props.onStart(this.getPlayers(this.state.players))}
+            >
+              Start
+            </Fab>
+          </Grid>
+        </Grid>
+      </Grid>
     );
   }
 }
-
-export const PlayerManger = Form.create()(PlayerManagerBase);

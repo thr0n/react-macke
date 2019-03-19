@@ -1,40 +1,44 @@
 import * as React from "react";
-import { Button } from "antd";
+import Button from "@material-ui/core/Button";
+import Icon from "@material-ui/core/Icon";
+import { Fab } from "@material-ui/core";
 
 export const ActionContainer = props => {
   const renderGameActions = () => {
     return (
       <div>
-        <Button
-          type="primary"
+        <Fab
+          variant="round"
+          color="primary"
           onClick={() => props.rollDices()}
           disabled={props.thrown}
         >
-          Würfeln{" "}
-        </Button>{" "}
-        <Button
-          type="primary"
+          <Icon>autorenew</Icon>
+        </Fab>{" "}
+        <Fab
+          variant="round"
+          color="secondary"
           disabled={!props.canTakeScores}
           onClick={() => props.onTakeScores()}
         >
-          Punkte nehmen{" "}
-        </Button>{" "}
-        <Button
-          type="primary"
+          <Icon>thumb_up</Icon>
+        </Fab>{" "}
+        <Fab
+          variant="round"
           disabled={!props.canFinish}
           onClick={() => props.onFinishMove()}
         >
-          Zug beenden{" "}
-        </Button>{" "}
+          <Icon>check_cirecle</Icon>
+        </Fab>{" "}
       </div>
     );
   };
 
-  const renderRestartButton = () => {
-    return (
-      <Button type="primary" onClick={() => props.restart()} icon="reload" >Spiel neu starten</Button>
-    );
-  };
+  const renderRestartButton = () => (
+    <Button variant="contained" color="primary" onClick={() => props.restart()}>
+      <Icon>refresh</Icon> Spiel neu starten
+    </Button>
+  );
 
   return (
     <div className="action-container">

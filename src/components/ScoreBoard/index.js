@@ -1,19 +1,59 @@
 import * as React from "react";
-import { Col, Row } from "antd";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+
+import "./ScoreBoard.scss";
+
+const getNthRow = (index, players) => {
+  return players.map(player => player.moves[index]);
+};
 
 export const ScoreBoard = props => {
+  const createRows = players => {
+    const rows = [];
+
+    players[0].moves.forEach((move, index) => {
+      const nthRow = getNthRow(index, players);
+      rows.push(nthRow);
+    });
+
+    return rows;
+  };
+
+  const rows = createRows(props.players);
+
   return (
-    <div style={{ marginTop: "20px" }}>
-      <Row>
-        {props.players.map(player => (
-          <Col span={24 / props.players.length} key={player.player}>
-            {player.player}
-            {player.moves.map((move, index) => (
-              <Row key={`move-${player.player}-${index}`}>{move}</Row>
+    <div className="scoreboard">
+      <Paper>
+        <Table>
+          <TableHead>
+            <TableRow>
+              {props.players.map(player => (
+                <TableCell key={player.player}>
+                  {player.player} <span>({player.wonGames})</span>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row, index) => (
+              <TableRow key={index}>
+                {row.map((val, index) => {
+                  return (
+                    <TableCell align="right" key={index}>
+                      {val}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
             ))}
-          </Col>
-        ))}
-      </Row>
+          </TableBody>
+        </Table>
+      </Paper>
     </div>
   );
 };

@@ -1,6 +1,9 @@
 import * as React from "react";
-import { Avatar, Card } from "antd";
 import PropTypes from "prop-types";
+import Card from "@material-ui/core/Card";
+import Avatar from "@material-ui/core/Avatar";
+import CardHeader from "@material-ui/core/CardHeader";
+import { Grid } from "@material-ui/core";
 
 import "./CurrentPlayer.scss";
 
@@ -20,26 +23,21 @@ export const CurrentPlayer = props => {
   const img = getImageForPlayer(props.currentPlayer.player);
 
   return (
-    <div className="current-player">
+    <Grid item xs={12}>
       <Card>
-        <p>
-          {img ? (
-            <Avatar
-              src={img}
-              style={{
-                marginRight: "5px"
-              }}
-            />
-          ) : (
-            <Avatar>{props.currentPlayer.player.substring(0, 1)}</Avatar>
-          )}{" "}
-          {props.currentPlayer.player ? props.currentPlayer.player : "..."}
-          {" "} ist dran.
-        </p>{" "}
-        <p> Punkte in in dieser Runde: {props.currentScore} </p>{" "}
-        <p> Punkte insgesamt: {props.currentPlayer.overallScore} </p>{" "}
-      </Card>{" "}
-    </div>
+        <CardHeader
+          avatar={
+            img ? (
+              <Avatar src={img} title={props.currentPlayer.player} />
+            ) : (
+              <Avatar>{props.currentPlayer.player.substring(0, 1)}</Avatar>
+            )
+          }
+          title={`Punkte in in dieser Runde: ${props.currentScore}`}
+          subheader={`Punkte insgesamt: ${props.currentPlayer.overallScore}`}
+        />
+      </Card>
+    </Grid>
   );
 };
 

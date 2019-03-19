@@ -1,3 +1,5 @@
+const TARGET_SCORE = 100;
+
 const mapDiceStateListToArray = diceStates => {
     const scoreDist = [0, 0, 0, 0, 0, 0];
 
@@ -213,9 +215,10 @@ export const processFinishMove = (gameState) => {
     } = gameState;
 
     const newOverallScore = gameState.players[currentPlayerId].overallScore += gameState.currentScore;
-    const gameOver = newOverallScore >= 5050; // TODO: remove this magic number
+    const gameOver = newOverallScore >= TARGET_SCORE; 
 
     gameState.players[currentPlayerId].overallScore = newOverallScore;
+    gameState.players[currentPlayerId].wonGames++;
     gameState.players[currentPlayerId].moves.push(gameState.players[currentPlayerId].overallScore)
 
     if (gameOver) {

@@ -1,49 +1,65 @@
-import React, { Component } from "react";
-import { Row, Col } from "antd";
+import * as React from "react";
+import Grid from "@material-ui/core/Grid";
+import Fab from "@material-ui/core/Fab";
 
 import { GameBoard } from "./components/GameBoard/GameBoard";
 
 import "./App.css";
-import logo from "./macke-logo.png";
-import { PlayerManger } from "./components/PlayerManager/PlayerManager";
-// import { MackeMenu } from "./components/MackeMenu";
 
-class App extends Component {
+import { PlayerManager } from "./components/PlayerManager/PlayerManager";
+import { Logo } from "./components/Logo";
+
+class App extends React.Component {
   state = {
     players: [
-      // "Hendrik", "Jessi", "Werner"
-    ]
+      "Hendrik", "Jessi", "Werner"
+    ],
+    started: false
   };
 
-  addPlayers = players => {
-    this.setState({ players });
+  addPlayer = playerName => {
+    const currentPlayers = this.state.players;
+    currentPlayers.push(playerName);
+    this.setState({ players: currentPlayers });
   };
 
-  renderPlayerManager = () => {
-    return <PlayerManger onSave={players => this.addPlayers(players)} />;
+  startGame = players => {
+    this.setState({ players, started: true });
+  };
+
+  renderPlayerManager = players => {
+    return (
+      <>
+        <PlayerManager
+          onAdd={playerName => this.addPlayer(playerName)}
+          onStart={players => this.startGame(players)}
+        />
+      </>
+    );
   };
 
   render() {
-    const { players } = this.state;
+    const { players, started } = this.state;
 
     return (
-      <div className="App">
-        {/* <MackeMenu /> */}
-        <Row style={{ marginTop: "20px", marginBottom: "3px" }}>
-          <Col xs={1} xl={8} />
-          <Col xs={22} xl={8}>
-            <img src={logo} alt="React-Macke" width="80%" height="auto"/>
-          </Col>{" "}
-          <Col xs={1} xl={8} />
-        </Row>{" "}
-        <Row>
-          {players.length === 0 ? (
-            this.renderPlayerManager()
-          ) : (
-            <GameBoard players={players} />
-          )}
-        </Row>{" "}
-      </div>
+      <Grid
+        container
+        spacing={8}
+        direction="column"
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item xl={8}>
+          <div className="App" style={{ position: "relative" }}>
+            <Logo />
+            {players.length === 0 && !started ? (
+              this.renderPlayerManager(players)
+            ) : (
+              <GameBoard players={players} />
+            )}
+          </div>
+        </Grid>
+      </Grid>
     );
   }
 }

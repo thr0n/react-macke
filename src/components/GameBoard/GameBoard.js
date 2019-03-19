@@ -1,9 +1,7 @@
 import * as React from "react";
 import * as _ from "lodash";
 import PropTypes from "prop-types";
-import { Col, Row, Popover, notification, message } from "antd";
-import { MackeDice } from "../Dice/MackeDice";
-import { ActionContainer } from "../ActionContainer/ActionContainer";
+
 import {
   diceCompositionIsValid,
   verifyAtLeastOneDiceIsSelected,
@@ -12,10 +10,21 @@ import {
   processInvalidComposition
 } from "../../engine/GameEngine";
 
-import "./GameBoard.scss";
+import { MackeDice } from "../Dice/MackeDice";
+import { ActionContainer } from "../ActionContainer/ActionContainer";
 import { CurrentPlayer } from "../CurrentPlayer/CurrentPlayer";
-import { DebugTool } from "../DebugTool/DebugTool";
 import { ScoreBoard } from "../ScoreBoard";
+import { WinnerMessage } from "./Messages/WinnerMessage";
+import { InvalidSelectionMessage } from "./Messages/InvalidSelectionMessage";
+import { InvalidCompositionMessage } from "./Messages/InvalidCompositionMessage";
+import { ContinuationNeededMessage } from "./Messages/ContinuationNeededMessage";
+
+import "./GameBoard.scss";
+
+const INVALID_SELECTION = "invalidSelection";
+const INVALID_COMPOSITION = "invalidComposition";
+const CONTINUATION_NEEDED = "continuationNeeded";
+const WINNER = "winnerMessage";
 
 const initialState = {
   currentScore: 0,
@@ -51,7 +60,13 @@ const initialState = {
       taken: false,
       score: 2
     }
-  ]
+  ],
+  messagesVisible: {
+    invalidSelection: false,
+    invalidComposition: false,
+    winnerMessage: false,
+    continuationNeeded: false
+  }
 };
 
 export class GameBoard extends React.Component {
@@ -63,52 +78,63 @@ export class GameBoard extends React.Component {
     this.state = {
       ...init,
       players: this.props.players.map(player => {
-        return { player: player, overallScore: 0, moves: [] };
+        return { player: player, overallScore: 0, moves: [], wonGames: 0 };
       }),
       currentPlayerId: 0
     };
   }
 
-  restartGame = () => {
-    this.setState({
-      ..._.cloneDeep(initialState),
-      players: this.props.players.map(player => {
-        return { player: player, overallScore: 0, moves: [] };
-      }),
-      currentPlayerId: 0
-    })
-  }
+  setMessageFlag = (key, enabled, event) => {
+    if (event === "clickaway") {
+      return;
+    }
 
-  throwInvalidDiceCompositionMessage = nextPlayer => {
-    notification.open({
-      message: "Ungültiger Wurf",
-      description:
-        "Keiner der Würfel hat den Wert 1 oder 5. " +
-        nextPlayer +
-        " ist an der Reihe!"
-    });
+    let messagesVisible = this.state.messagesVisible;
+
+    switch (key) {
+      case INVALID_SELECTION:
+        messagesVisible.invalidSelection = enabled;
+        break;
+      case INVALID_COMPOSITION:
+        messagesVisible.invalidComposition = enabled;
+        break;
+      case CONTINUATION_NEEDED:
+        messagesVisible.continuationNeeded = enabled;
+        break;
+      case WINNER:
+        messagesVisible.winnerMessage = enabled;
+        break;
+      default:
+        break;
+    }
+
+    this.setState({ messagesVisible });
+  };
+
+  throwInvalidDiceCompositionMessage = () => {
+    this.setMessageFlag(INVALID_COMPOSITION, true);
   };
 
   throwInvalidDiceSelectionMessage = () => {
-    notification.open({
-      message: "Ungültige Auswahl",
-      description:
-        "Du musst mindestens eine 1 oder eine 5 auswählen. Wählst du zusätzlich eine " +
-        "andere Augenzahl, muss diese genau drei mal ausgewählt sein!"
-    });
-  };
-
-  throwWinnerMessage = winner => {
-    notification.open({
-      message: "Gratulation!",
-      description:
-        "Das Spiel ist zu Ende. " + winner + " hat das Spiel gewonnen!",
-      duration: 0
-    });
+    this.setMessageFlag(INVALID_SELECTION, true);
   };
 
   throwContinuationNeededMessage = () => {
-    message.warning("Anschluss! Du musst weiterspielen!");
+    this.setMessageFlag(CONTINUATION_NEEDED, true);
+  };
+
+  throwWinnerMessage = () => {
+    this.setMessageFlag(WINNER, true);
+  };
+
+  restartGame = () => {
+    this.setState({
+      ..._.cloneDeep(initialState),
+      players: this.props.players.map((player, index) => {
+        return { player: player, overallScore: 0, moves: [], wonGames: this.state.players[index].wonGames };
+      }),
+      currentPlayerId: 0
+    });
   };
 
   rollDices() {
@@ -174,77 +200,79 @@ export class GameBoard extends React.Component {
 
   finishMove() {
     const nextState = processFinishMove(this.state);
-
     if (nextState.gameOver) {
-      this.throwWinnerMessage(
-        this.state.players[this.state.currentPlayerId].player
-      );
+      this.throwWinnerMessage();
+      nextState.thrown = false;
     }
 
-    this.setState(..._.cloneDeep(initialState), nextState);
+    const next = Object.assign({}, initialState, nextState)
+
+    this.setState(next);
   }
 
   render() {
     return (
-      <Row>
-        <Col xs={1} xl={8} />
-        <Col xs={22} xl={8}>
-          <CurrentPlayer
-            currentPlayer={this.state.players[this.state.currentPlayerId]}
-            currentScore={this.state.currentScore}
-          />{" "}
-          <div className="dice-container">
-            {" "}
-            {this.state.diceStates.map((diceState, index) => {
-              return (
-                <MackeDice
-                  key={`dice-${index}`}
-                  diceId={index}
-                  value={diceState.score}
-                  keepValue={diceState.keepValue}
-                  clickable={this.state.thrown && !diceState.taken}
-                  taken={diceState.taken}
-                  onClick={this.toggleKeepValue.bind(this)}
-                />
-              );
-            })}{" "}
-          </div>{" "}
-          <ActionContainer
-            rollDices={() => this.rollDices()}
-            onTakeScores={() => this.takeScores()}
-            onFinishMove={() => this.finishMove()}
-            continuationNeeded={this.state.continuationNeeded}
-            firstThrow={this.state.firstThrow}
-            thrown={this.state.thrown}
-            canFinish={this.state.canFinish}
-            canTakeScores={verifyAtLeastOneDiceIsSelected(
-              this.state.diceStates
-            )}
-            gameOver={this.state.gameOver}
-            restart={this.restartGame}
-          />
-          <Popover
-            content={
-              <DebugTool
-                diceStates={this.state.diceStates}
-                onUpdate={diceStates => this.updateScores(diceStates)}
+      <>
+        <CurrentPlayer
+          currentPlayer={this.state.players[this.state.currentPlayerId]}
+          currentScore={this.state.currentScore}
+        />{" "}
+        <div className="dice-container">
+          {" "}
+          {this.state.diceStates.map((diceState, index) => {
+            return (
+              <MackeDice
+                key={`dice-${index}`}
+                diceId={index}
+                value={diceState.score}
+                keepValue={diceState.keepValue}
+                clickable={this.state.thrown && !diceState.taken}
+                taken={diceState.taken}
+                onClick={this.toggleKeepValue.bind(this)}
               />
-            }
-            trigger="click"
-            placement="bottom"
-          >
-            <span
-              style={{
-                cursor: "pointer"
-              }}
-            >
-              <i className="material-icons"> bug_report </i>{" "}
-            </span>{" "}
-          </Popover>{" "}
-          <ScoreBoard players={this.state.players} />
-        </Col>{" "}
-        <Col xs={1} xl={8} />
-      </Row>
+            );
+          })}{" "}
+        </div>{" "}
+        <ActionContainer
+          rollDices={() => this.rollDices()}
+          onTakeScores={() => this.takeScores()}
+          onFinishMove={() => this.finishMove()}
+          continuationNeeded={this.state.continuationNeeded}
+          firstThrow={this.state.firstThrow}
+          thrown={this.state.thrown}
+          canFinish={this.state.canFinish}
+          canTakeScores={verifyAtLeastOneDiceIsSelected(this.state.diceStates)}
+          gameOver={this.state.gameOver}
+          restart={this.restartGame}
+        />
+        <ScoreBoard players={this.state.players} />
+        <InvalidSelectionMessage
+          open={this.state.messagesVisible.invalidSelection}
+          handleClose={(event, reason) =>
+            this.setMessageFlag(INVALID_SELECTION, false, reason)
+          }
+        />
+        <InvalidCompositionMessage
+          open={this.state.messagesVisible.invalidComposition}
+          nextPlayer={this.state.players[this.state.currentPlayerId].player}
+          handleClose={(event, reason) =>
+            this.setMessageFlag(INVALID_COMPOSITION, false, reason)
+          }
+        />
+        <WinnerMessage
+          open={this.state.messagesVisible.winnerMessage}
+          winner={this.state.players[this.state.currentPlayerId].player}
+          handleClose={(event, reason) =>
+            this.setMessageFlag(WINNER, false, reason)
+          }
+        />
+        <ContinuationNeededMessage
+          open={this.state.messagesVisible.continuationNeeded}
+          handleClose={(event, reason) =>
+            this.setMessageFlag(CONTINUATION_NEEDED, false, reason)
+          }
+        />
+      </>
     );
   }
 }
