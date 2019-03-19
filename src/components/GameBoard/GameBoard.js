@@ -59,6 +59,11 @@ const initialState = {
       keepValue: false,
       taken: false,
       score: 2
+    },
+    {
+      keepValue: false,
+      taken: false,
+      score: 5
     }
   ],
   messagesVisible: {
@@ -131,7 +136,12 @@ export class GameBoard extends React.Component {
     this.setState({
       ..._.cloneDeep(initialState),
       players: this.props.players.map((player, index) => {
-        return { player: player, overallScore: 0, moves: [], wonGames: this.state.players[index].wonGames };
+        return {
+          player: player,
+          overallScore: 0,
+          moves: [],
+          wonGames: this.state.players[index].wonGames
+        };
       }),
       currentPlayerId: 0
     });
@@ -153,6 +163,7 @@ export class GameBoard extends React.Component {
           currentStates[index].score = generateNewValue();
         }
       });
+      this.setState({ canFinish: false });
     }
 
     this.setState({
@@ -205,11 +216,9 @@ export class GameBoard extends React.Component {
       nextState.thrown = false;
     }
 
-    const next = Object.assign({}, initialState, nextState)
-
+    const next = Object.assign({}, initialState, nextState);
     this.setState(next);
   }
-
   render() {
     return (
       <>

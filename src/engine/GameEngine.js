@@ -1,4 +1,4 @@
-const TARGET_SCORE = 100;
+const TARGET_SCORE = 500;
 
 const mapDiceStateListToArray = diceStates => {
     const scoreDist = [0, 0, 0, 0, 0, 0];
@@ -15,7 +15,10 @@ const diceSelectionIsStreet = scoreList => {
         JSON.stringify(scoreList) === JSON.stringify([1, 1, 1, 1, 1, 0]);
     const upperStreet =
         JSON.stringify(scoreList) === JSON.stringify([0, 1, 1, 1, 1, 1]);
-    return lowerStreet || upperStreet;
+    const compleStreet =
+        JSON.stringify(scoreList) === JSON.stringify([1, 1, 1, 1, 1, 1]);
+
+    return lowerStreet || upperStreet || compleStreet;
 };
 
 const getTakenDices = diceStates => {
@@ -100,13 +103,14 @@ const calculateScores = scoreList => {
     return currentScore;
 };
 
-const handleStreet = (selectedDices, currentScore, nextState) => {
+const handleStreet = (selectedDices, currentScore, nextState, diceStates) => {
     selectedDices.map(dice => (dice.taken = true));
     nextState = {
         ...nextState,
-        continuationNeeded: true,
         thrown: false,
-        firstThrow: true,
+        validSelection: true,
+        continuationNeeded: continuationNeeded(diceStates),
+        canFinish: !continuationNeeded(diceStates),
         currentScore: currentScore + 2000
     };
     return nextState;
@@ -142,7 +146,7 @@ export const processTakeScores = gameState => {
     };
 
     if (diceSelectionIsStreet(scoreList)) {
-        return handleStreet(selectedDices, gameState.currentScore, nextState);
+        return handleStreet(selectedDices, gameState.currentScore, nextState, diceStates);
     }
 
     if (!validSelection) {
@@ -199,6 +203,11 @@ export const processInvalidComposition = gameState => {
                 keepValue: false,
                 taken: false,
                 score: 2
+            },
+            {
+                keepValue: false,
+                taken: false,
+                score: 5
             }
         ]
     }
@@ -215,17 +224,18 @@ export const processFinishMove = (gameState) => {
     } = gameState;
 
     const newOverallScore = gameState.players[currentPlayerId].overallScore += gameState.currentScore;
-    const gameOver = newOverallScore >= TARGET_SCORE; 
+    const gameOver = newOverallScore >= TARGET_SCORE;
 
     gameState.players[currentPlayerId].overallScore = newOverallScore;
-    gameState.players[currentPlayerId].wonGames++;
     gameState.players[currentPlayerId].moves.push(gameState.players[currentPlayerId].overallScore)
 
     if (gameOver) {
+        gameState.players[currentPlayerId].wonGames++;
         return {
+            gameState,
             gameOver,
             thrown: true,
-            canFinish: false
+            canFinish: false,
         }
     }
 
@@ -258,6 +268,11 @@ export const processFinishMove = (gameState) => {
                 keepValue: false,
                 taken: false,
                 score: 2
+            },
+            {
+                keepValue: false,
+                taken: false,
+                score: 5
             }
         ]
     };
