@@ -54,7 +54,6 @@ const verifyAdditionalSpotsAreSelectedExactlyThreeTimes = additionalSpots => {
 export const diceSelectionIsValid = takenDices => {
     // selection must contain at least one dice
     if (takenDices.length < 1) {
-        console.log("Bitte mindestens einen Würfel auswählen!");
         return false;
     }
 

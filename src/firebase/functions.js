@@ -1,6 +1,5 @@
 export const updateStartedGames = firebase => {
     firebase.gamesStarted().transaction(gamesStarted => {
-        console.log(gamesStarted)
         if (gamesStarted === null) {
             return 1;
         } else {
