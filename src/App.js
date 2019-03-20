@@ -1,12 +1,19 @@
 import * as React from "react";
 import Grid from "@material-ui/core/Grid";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import { GameBoard } from "./components/GameBoard/GameBoard";
-
-import "./App.css";
-
+import GameBoard from "./components/GameBoard/GameBoard";
 import { PlayerManager } from "./components/PlayerManager/PlayerManager";
 import { Logo } from "./components/Logo";
+import { Navigation } from "./components/Navigation/Navigation";
+import { LandingPage } from "./components/LandingPage/LadingPage";
+import Stats from "./components/Stats/Stats";
+import { updateStartedGames } from "./firebase/functions";
+
+import * as ROUTES from "./constants/routes";
+
+import "./App.css";
+import { withFirebase } from "./firebase";
 
 class App extends React.Component {
   state = {
@@ -24,7 +31,8 @@ class App extends React.Component {
 
   startGame = players => {
     this.setState({ players, started: true });
-  };
+    updateStartedGames(this.props.firebase);
+  }
 
   renderPlayerManager = players => {
     return (
@@ -48,19 +56,31 @@ class App extends React.Component {
         justify="center"
         alignItems="center"
       >
-        <Grid item xl={8}>
-          <div className="App" style={{ position: "relative" }}>
-            <Logo />
-            {players.length === 0 && !started ? (
-              this.renderPlayerManager(players)
-            ) : (
-              <GameBoard players={players} />
+        <Router>
+          {/* <Navigation /> */}
+          {/* <Route exact path={ROUTES.LANDING} component={LandingPage} /> */}
+
+          <Route
+            path={ROUTES.LANDING}
+            render={() => (
+              <Grid item xl={8}>
+                <div className="App" style={{ position: "relative" }}>
+                  <Logo />
+                  {players.length === 0 && !started ? (
+                    this.renderPlayerManager(players)
+                  ) : (
+                    <GameBoard players={players} />
+                  )}
+                </div>
+              </Grid>
             )}
-          </div>
-        </Grid>
+          />
+          
+          {/* <Route path={ROUTES.STATS} component={Stats} /> */}
+        </Router>
       </Grid>
     );
   }
 }
 
-export default App;
+export default withFirebase(App);

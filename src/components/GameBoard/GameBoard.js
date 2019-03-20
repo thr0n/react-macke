@@ -20,6 +20,9 @@ import { InvalidSelectionMessage } from "./Messages/InvalidSelectionMessage";
 import { InvalidCompositionMessage } from "./Messages/InvalidCompositionMessage";
 import { ContinuationNeededMessage } from "./Messages/ContinuationNeededMessage";
 
+import { withFirebase } from "../../firebase";
+import { updateStartedGames, updateFinishedGames } from "../../firebase/functions";
+
 import "./GameBoard.scss";
 
 const INVALID_SELECTION = "invalidSelection";
@@ -75,7 +78,7 @@ const initialState = {
   }
 };
 
-export class GameBoard extends React.Component {
+class GameBoard extends React.Component {
   constructor(props) {
     super(props);
 
@@ -134,6 +137,7 @@ export class GameBoard extends React.Component {
   };
 
   restartGame = () => {
+    updateStartedGames(this.props.firebase);
     this.setState({
       ..._.cloneDeep(initialState),
       players: this.props.players.map((player, index) => {
@@ -215,6 +219,8 @@ export class GameBoard extends React.Component {
     if (nextState.gameOver) {
       this.throwWinnerMessage();
       nextState.thrown = false;
+
+      updateFinishedGames(this.props.firebase);
     }
 
     const next = Object.assign({}, initialState, nextState);
@@ -223,7 +229,7 @@ export class GameBoard extends React.Component {
   render() {
     return (
       <>
-        <div style={{height: "80px"}}>
+        <div style={{ height: "80px" }}>
           <ReactCSSTransitionGroup
             className="container"
             component="div"
@@ -302,3 +308,5 @@ export class GameBoard extends React.Component {
 GameBoard.propTypes = {
   players: PropTypes.arrayOf(PropTypes.string)
 };
+
+export default withFirebase(GameBoard);
