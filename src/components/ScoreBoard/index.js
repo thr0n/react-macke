@@ -34,7 +34,7 @@ export const ScoreBoard = props => {
             <TableRow>
               {props.players.map(player => (
                 <TableCell key={player.player}>
-                  {player.player} <span>({player.wonGames})</span>
+                  {player.player} ({player.wonGames})
                 </TableCell>
               ))}
             </TableRow>

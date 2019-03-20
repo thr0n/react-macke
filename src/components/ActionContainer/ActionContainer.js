@@ -9,19 +9,19 @@ export const ActionContainer = props => {
       <div>
         <Fab
           variant="round"
-          color="primary"
-          onClick={() => props.rollDices()}
-          disabled={props.thrown}
-        >
-          <Icon>autorenew</Icon>
-        </Fab>{" "}
-        <Fab
-          variant="round"
           color="secondary"
           disabled={!props.canTakeScores}
           onClick={() => props.onTakeScores()}
         >
           <Icon>thumb_up</Icon>
+        </Fab>{" "}
+        <Fab
+          variant="round"
+          color="primary"
+          onClick={() => props.rollDices()}
+          disabled={props.thrown}
+        >
+          <Icon>autorenew</Icon>
         </Fab>{" "}
         <Fab
           variant="round"

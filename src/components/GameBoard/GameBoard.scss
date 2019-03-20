@@ -9,9 +9,35 @@
 
 .action-container {
     margin-bottom: 1vh;
-    
+
     button {
         margin-right: 3px;
         margin-left: 3px;
     }
+}
+
+.container {
+    position: relative;
+}
+.container > div {
+    width: 100%;
+    position: absolute;
+}
+
+.fade-enter {
+    opacity: 0.01;
+}
+
+.fade-enter.fade-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+}
+
+.fade-leave {
+    opacity: 1;
+}
+
+.fade-leave.fade-leave-active {
+    opacity: 0.01;
+    transition: opacity 300ms ease-in;
 }
