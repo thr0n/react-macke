@@ -26,7 +26,7 @@ export const ScoreBoard = props => {
 
   const rows = createRows(props.players);
 
-  return (
+  return (  
     <div className="scoreboard">
       <Paper>
         <Table>
