@@ -1,4 +1,4 @@
-const TARGET_SCORE = 500;
+const TARGET_SCORE = 5050;
 
 const mapDiceStateListToArray = diceStates => {
     const scoreDist = [0, 0, 0, 0, 0, 0];
