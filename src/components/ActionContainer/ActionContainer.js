@@ -8,6 +8,7 @@ export const ActionContainer = props => {
     return (
       <div>
         <Fab
+          id="take-scores-button"
           variant="round"
           color="secondary"
           disabled={!props.canTakeScores}
@@ -16,7 +17,7 @@ export const ActionContainer = props => {
           <Icon>thumb_up</Icon>
         </Fab>{" "}
         <Fab
-          id="roll-dices-buton"
+          id="roll-dices-button"
           variant="round"
           color="primary"
           onClick={() => props.rollDices()}
@@ -25,6 +26,7 @@ export const ActionContainer = props => {
           <Icon>autorenew</Icon>
         </Fab>{" "}
         <Fab
+          id="finish-move-button"
           variant="round"
           disabled={!props.canFinish}
           onClick={() => props.onFinishMove()}
@@ -41,7 +43,7 @@ export const ActionContainer = props => {
   };
 
   const renderRestartButton = () => (
-    <Button variant="contained" color="primary" onClick={() => props.restart()}>
+    <Button id="restart-button" variant="contained" color="primary" onClick={() => props.onRestart()}>
       <Icon>refresh</Icon> Spiel neu starten
     </Button>
   );
