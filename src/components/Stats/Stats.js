@@ -2,6 +2,7 @@ import * as React from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { withFirebase } from "../../firebase";
 import { NumericStat } from "./NumericStat";
+import { PercentageStat } from "./PercentageStat";
 
 class Stats extends React.Component {
   constructor(props) {
@@ -24,16 +25,20 @@ class Stats extends React.Component {
   }
 
   renderStats = () => {
+    const { gamesFinished, gamesStarted, highscore } = this.state.gameStats;
+    const finishingRate = (gamesFinished / gamesStarted) * 100;
+
     return (
       <>
-        <NumericStat
-          label="Spiele gestarted"
-          value={this.state.gameStats.gamesStarted}
+        <NumericStat label="Spiele gestarted" value={gamesStarted} />
+        <NumericStat label="Spiele beendet" value={gamesFinished} />
+        <PercentageStat
+          label="beendet"
+          value={isNaN(finishingRate) ? 0 : finishingRate}
         />
-        <NumericStat
-          label="Spiele beendet"
-          value={this.state.gameStats.gamesFinished}
-        />
+        {highscore && <NumericStat label="Highscore" value={highscore} />}
+        {/* <NumericStat label="Längstes Spiel" value={gamesFinished} />
+        <NumericStat label="Kürzestes Spiel" value={gamesFinished} /> */}
       </>
     );
   };

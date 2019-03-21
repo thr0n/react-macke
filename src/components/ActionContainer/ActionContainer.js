@@ -4,6 +4,7 @@ import Icon from "@material-ui/core/Icon";
 import { Fab } from "@material-ui/core";
 
 export const ActionContainer = props => {
+
   const renderGameActions = () => {
     return (
       <div>
@@ -27,6 +28,7 @@ export const ActionContainer = props => {
           variant="round"
           disabled={!props.canFinish}
           onClick={() => props.onFinishMove()}
+          style={props.canFinish ? { backgroundColor: "green", color: "white" } : null}
         >
           <Icon>check_cirecle</Icon>
         </Fab>{" "}

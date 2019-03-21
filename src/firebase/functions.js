@@ -20,3 +20,9 @@ export const updateFinishedGames = firebase => {
         return gamesFinished++;
     });
 }
+
+export const updateHighscore = (firebase, score) => {
+    firebase.highscore().transaction(highscore => {
+        return Math.max(score, highscore);
+    })
+}
