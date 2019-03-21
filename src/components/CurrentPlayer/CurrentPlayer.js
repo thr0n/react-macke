@@ -23,7 +23,7 @@ export const CurrentPlayer = props => {
   const img = getImageForPlayer(props.currentPlayer.player);
 
   return (
-    <Grid item xs={12}>
+    <Grid item xs={12} id="current-player">
       <Card>
         <CardHeader
           avatar={

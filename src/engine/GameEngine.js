@@ -1,14 +1,48 @@
-const TARGET_SCORE = 5050;
+const TARGET_SCORE = 200;
 
 const mapDiceStateListToArray = diceStates => {
     const scoreDist = [0, 0, 0, 0, 0, 0];
 
-    diceStates.map(diceState => {
-        return (scoreDist[diceState.score - 1] =
-            (scoreDist[diceState.score - 1] || 0) + 1);
+    diceStates.forEach(diceState => {
+        scoreDist[diceState.score - 1] = (scoreDist[diceState.score - 1] || 0) + 1;
     }, scoreDist);
+
     return scoreDist;
 };
+
+const resetDices = () => (
+    [{
+            keepValue: false,
+            taken: false,
+            score: 1
+        },
+        {
+            keepValue: false,
+            taken: false,
+            score: 3
+        },
+        {
+            keepValue: false,
+            taken: false,
+            score: 4
+        },
+        {
+            keepValue: false,
+            taken: false,
+            score: 6
+        },
+        {
+            keepValue: false,
+            taken: false,
+            score: 2
+        },
+        {
+            keepValue: false,
+            taken: false,
+            score: 5
+        }
+    ]
+)
 
 const diceSelectionIsStreet = scoreList => {
     const lowerStreet =
@@ -25,8 +59,8 @@ const getTakenDices = diceStates => {
     return diceStates.filter(state => state.keepValue && !state.taken);
 };
 
-export const continuationNeeded = diceState => {
-    return diceState.filter(dice => dice.taken).length === diceState.length;
+export const continuationNeeded = diceStates => {
+    return diceStates.filter(dice => dice.taken).length === diceStates.length;
 };
 
 export const diceCompositionIsValid = thrownDices => {
@@ -40,9 +74,7 @@ export const diceCompositionIsValid = thrownDices => {
 };
 
 const verifyAdditionalSpotsAreSelectedExactlyThreeTimes = additionalSpots => {
-    additionalSpots = additionalSpots.filter(spot => spot !== 0);
-
-    const additionalSelectedSpots = mapDiceStateListToArray(additionalSpots)
+    const additionalSelectedSpots = mapDiceStateListToArray(additionalSpots.filter(spot => spot !== 0))
 
     if (additionalSpots.length > 0) {
         const filtered = additionalSelectedSpots.filter(score => score === 3);
@@ -74,9 +106,10 @@ export const verifyAtLeastOneDiceIsSelected = diceStates => {
     return getTakenDices(diceStates).length > 0;
 };
 
-const getScoresBy = (dots, count) => {
+const getScoresByDotsAndCount = (dots, count) => {
     dots += 1; // increase the dots to match dice dots
     switch (count) {
+        case 6:
         case 5:
             return 2000;
         case 4:
@@ -96,7 +129,7 @@ const calculateScores = scoreList => {
     let currentScore = 0;
 
     scoreList.forEach((count, dots) => {
-        currentScore += getScoresBy(dots, count);
+        currentScore += getScoresByDotsAndCount(dots, count);
     });
 
     return currentScore;
@@ -118,34 +151,31 @@ const handleStreet = (selectedDices, currentScore, nextState, diceStates) => {
 const handleInvalidSelection = (diceStates, nextState) => {
     diceStates.forEach(dice => {
         if (dice.keepValue && !dice.taken) {
-            dice.keepValue = false;
+            dice.keepValue = false; // reset the invalid selection
         }
     });
 
-    nextState = {
+    return {
         ...nextState,
         diceStates
     };
-    return nextState;
 };
 
 const markAsTaken = selectedDices => {
     return selectedDices.map(dice => (dice.taken = true));
 };
 
-export const processTakeScores = gameState => {
-    const diceStates = gameState.diceStates;
-    const selectedDices = getTakenDices(gameState.diceStates);
+export const processTakeScores = (diceStates, currentScore) => {
+    const selectedDices = getTakenDices(diceStates);
     const scoreList = mapDiceStateListToArray(selectedDices);
     const validSelection = diceSelectionIsValid(selectedDices);
 
     let nextState = {
-        ...gameState,
         validSelection
     };
 
     if (diceSelectionIsStreet(scoreList)) {
-        return handleStreet(selectedDices, gameState.currentScore, nextState, diceStates);
+        return handleStreet(selectedDices, currentScore, nextState, diceStates);
     }
 
     if (!validSelection) {
@@ -156,59 +186,21 @@ export const processTakeScores = gameState => {
 
     return {
         ...nextState,
-        currentScore: gameState.currentScore + calculateScores(scoreList),
+        currentScore: currentScore + calculateScores(scoreList),
         thrown: false,
         continuationNeeded: continuationNeeded(diceStates),
         canFinish: !continuationNeeded(diceStates)
     };
 };
 
-export const processInvalidComposition = gameState => {
-    const {
-        currentPlayerId
-    } = gameState;
-
-    gameState.players[currentPlayerId].moves.push("–")
+export const processInvalidComposition = (currentPlayerId, players) => {
+    players[currentPlayerId].moves.push("–")
 
     const nextState = {
-        currentPlayerId: switchToNextPlayer(currentPlayerId, gameState.players.length),
-        currentScore: 0,
-        continuationNeeded: false,
+        currentPlayerId: switchToNextPlayer(currentPlayerId, players.length),
         firstThrow: true,
         thrown: false,
-        canFinish: false,
-        validSelection: false,
-        diceStates: [{
-                keepValue: false,
-                taken: false,
-                score: 1
-            },
-            {
-                keepValue: false,
-                taken: false,
-                score: 3
-            },
-            {
-                keepValue: false,
-                taken: false,
-                score: 4
-            },
-            {
-                keepValue: false,
-                taken: false,
-                score: 6
-            },
-            {
-                keepValue: false,
-                taken: false,
-                score: 2
-            },
-            {
-                keepValue: false,
-                taken: false,
-                score: 5
-            }
-        ]
+        diceStates: resetDices()
     }
     return nextState;
 }
@@ -217,62 +209,28 @@ export const switchToNextPlayer = (currentPlayerId, numberOfPlayers) => {
     return (currentPlayerId === numberOfPlayers - 1) ? 0 : currentPlayerId + 1
 }
 
-export const processFinishMove = (gameState) => {
-    const {
-        currentPlayerId
-    } = gameState;
-
-    const newOverallScore = gameState.players[currentPlayerId].overallScore += gameState.currentScore;
+export const processFinishMove = (currentPlayerId, players, currentScore) => {
+    const newOverallScore = players[currentPlayerId].overallScore += currentScore;
     const gameOver = newOverallScore >= TARGET_SCORE;
 
-    gameState.players[currentPlayerId].overallScore = newOverallScore;
-    gameState.players[currentPlayerId].moves.push(gameState.players[currentPlayerId].overallScore)
+    players[currentPlayerId].overallScore = newOverallScore;
+    players[currentPlayerId].moves.push(players[currentPlayerId].overallScore)
 
     if (gameOver) {
-        gameState.players[currentPlayerId].wonGames++;
+        players[currentPlayerId].wonGames++;
         return {
-            gameState,
             gameOver,
+            currentScore: newOverallScore,
             thrown: true,
-            canFinish: false,
+            players
         }
     }
 
     return {
-        currentPlayerId: switchToNextPlayer(currentPlayerId, gameState.players.length),
+        currentPlayerId: switchToNextPlayer(currentPlayerId, players.length),
         currentScore: 0,
         gameOver,
         canFinish: false,
-        diceStates: [{
-                keepValue: false,
-                taken: false,
-                score: 1
-            },
-            {
-                keepValue: false,
-                taken: false,
-                score: 3
-            },
-            {
-                keepValue: false,
-                taken: false,
-                score: 4
-            },
-            {
-                keepValue: false,
-                taken: false,
-                score: 6
-            },
-            {
-                keepValue: false,
-                taken: false,
-                score: 2
-            },
-            {
-                keepValue: false,
-                taken: false,
-                score: 5
-            }
-        ]
+        diceStates: resetDices()
     };
 };

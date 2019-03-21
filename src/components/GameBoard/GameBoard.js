@@ -82,7 +82,7 @@ const initialState = {
   }
 };
 
-class GameBoard extends React.Component {
+export class GameBoardBase extends React.Component {
   constructor(props) {
     super(props);
 
@@ -182,11 +182,14 @@ class GameBoard extends React.Component {
     });
 
     if (!diceCompositionIsValid(this.state.diceStates)) {
-      const nextState = processInvalidComposition(this.state);
+      const nextState = processInvalidComposition(
+        this.state.currentPlayerId,
+        this.state.players
+      );
       this.throwInvalidDiceCompositionMessage(
         this.state.players[nextState.currentPlayerId].player
       );
-      this.setState(nextState);
+      this.setState({ ...nextState });
     }
   }
 
@@ -199,7 +202,10 @@ class GameBoard extends React.Component {
   }
 
   takeScores() {
-    const nextState = processTakeScores(this.state);
+    const nextState = processTakeScores(
+      this.state.diceStates,
+      this.state.currentScore
+    );
 
     if (!nextState.validSelection && !nextState.continuationNeeded) {
       this.throwInvalidDiceSelectionMessage();
@@ -209,7 +215,7 @@ class GameBoard extends React.Component {
       this.throwContinuationNeededMessage();
     }
 
-    this.setState(nextState);
+    this.setState({ ...nextState });
   }
 
   updateScores(diceStates) {
@@ -219,7 +225,8 @@ class GameBoard extends React.Component {
   }
 
   finishMove() {
-    const nextState = processFinishMove(this.state);
+    const { currentPlayerId, players, currentScore } = this.state;
+    const nextState = processFinishMove(currentPlayerId, players, currentScore);
     if (nextState.gameOver) {
       this.throwWinnerMessage();
       nextState.thrown = false;
@@ -312,8 +319,8 @@ class GameBoard extends React.Component {
   }
 }
 
-GameBoard.propTypes = {
+GameBoardBase.propTypes = {
   players: PropTypes.arrayOf(PropTypes.string)
 };
 
-export default withFirebase(GameBoard);
+export default withFirebase(GameBoardBase);

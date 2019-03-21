@@ -1,172 +1,80 @@
 import * as React from "react";
-import {shallow} from "enzyme";
-import {GameBoard} from "../GameBoard";
+import { mount, shallow } from "enzyme";
+import { GameBoardBase as GameBoard } from "../GameBoard";
 
 describe("GameBoard", () => {
-    /* TODO: move these tests to GameEngine test!
-    it("should detect an invalid single dice", () => {
-        const wrapper = shallow(<GameBoard/>);
-        const takenDices = [
-            { keepValue: true, taken: false, score: 2 }
-        ];
-        const result = wrapper.instance().diceCompositionIsValid(takenDices);
-        expect(result).toBe(false);
-    });
+  beforeEach(() => {
+    jest.resetModules();
+  });
 
-    it("should detect an invalid dice combination", () => {
-        const wrapper = shallow(<GameBoard/>);
-        const takenDices = [
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 2 }
-        ];
-        const takenDices2 = [
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 4 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 3 },
-            { keepValue: true, taken: false, score: 3 },
-            { keepValue: true, taken: false, score: 6 }
-        ];
-        const result = wrapper.instance().diceCompositionIsValid(takenDices);
-        expect(result).toBe(false);
+  it("should moint without errors", () => {
+    const comp = mount(<GameBoard players={["p1", "p2"]} started />);
 
-        const result2 = wrapper.instance().diceCompositionIsValid(takenDices2);
-        expect(result2).toBe(false);
-    });
+    expect(comp.find("Grid#current-player")).toHaveLength(1);
+    expect(comp.find("MackeDice")).toHaveLength(6);
+    expect(comp.find("Fab")).toHaveLength(3);
 
-    it("should detect a valid dice combination", () => {
-        const wrapper = shallow(<GameBoard/>);
-        const takenDices = [
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 2 }
-        ];
-        const takenDices2 = [
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 5 },
-            { keepValue: true, taken: false, score: 5 },
-            { keepValue: true, taken: false, score: 5 }
-        ];
-        const takenDices3 = [
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 1 }
-        ];
-        const result = wrapper.instance().diceCompositionIsValid(takenDices);
-        expect(result).toBe(true);
+    const tableHeaders = comp.find("th");
+    expect(tableHeaders).toHaveLength(2);
+    expect(tableHeaders.get(0).props.children[0]).toEqual("p1");
+    expect(tableHeaders.get(1).props.children[0]).toEqual("p2");
+  });
 
-        const result2 = wrapper.instance().diceCompositionIsValid(takenDices2);
-        expect(result2).toBe(true);
+  it("should set a message flag", () => {
+    const wrapper = mount(<GameBoard players={["p1", "p2"]} />);
 
-        const result3 = wrapper.instance().diceCompositionIsValid(takenDices3);
-        expect(result3).toBe(true);
-    })
+    expect(
+      wrapper.instance().setMessageFlag("invalidSelection", true, "any_reason")
+    );
+    expect(wrapper.state().messagesVisible.invalidSelection).toBe(true);
 
-    it("should detect invalid dice selections", () => {
-        const wrapper = shallow(<GameBoard/>);
-        const selectedDices =[
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 3 },
-            { keepValue: true, taken: false, score: 4 },
-            { keepValue: true, taken: false, score: 6 },
-        ]
-        const result = wrapper.instance().diceSelectionIsValid([]);
-        expect(result).toBe(false)
+    expect(
+      wrapper
+        .instance()
+        .setMessageFlag("invalidComposition", true, "any_reason")
+    );
+    expect(wrapper.state().messagesVisible.invalidComposition).toBe(true);
 
-        const result2 = wrapper.instance().diceSelectionIsValid(selectedDices);
-        expect(result2).toBe(false)
-    })
+    expect(
+      wrapper
+        .instance()
+        .setMessageFlag("continuationNeeded", true, "any_reason")
+    );
+    expect(wrapper.state().messagesVisible.continuationNeeded).toBe(true);
 
-    it("should return 50 points for a single 5", () => {
-        const wrapper = shallow(<GameBoard/>);
-        const selectedDices =[
-            { keepValue: true, taken: false, score: 5 },
-        ]
+    expect(
+      wrapper.instance().setMessageFlag("winnerMessage", true, "any_reason")
+    );
+    expect(wrapper.state().messagesVisible.winnerMessage).toBe(true);
 
-        const result = wrapper.instance().takeScores(selectedDices);
-        expect(result).toBe(50);
-    })
+    expect(
+      wrapper.instance().setMessageFlag("winnerMessage", false, "clickaway")
+    );
+    expect(wrapper.state().messagesVisible.winnerMessage).toBe(true);
 
-    it("should return 200 points for two times 1", () => {
-        const wrapper = shallow(<GameBoard/>);
-        const selectedDices =[
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 1 }
-        ]
+    expect(
+      wrapper.instance().setMessageFlag("unknown_key", false, "any_reason")
+    );
+    expect(wrapper.state().messagesVisible.winnerMessage).toBe(true);
+  });
 
-        const result = wrapper.instance().takeScores(selectedDices);
-        expect(result).toBe(200);
-    })
+  it("should throw messages", () => {
+    const wrapper = mount(<GameBoard players={["p1", "p2"]} />);
 
-    it("should return 400 points for three times 3 and a single 1", () => {
-        const wrapper = shallow(<GameBoard/>);
-        const selectedDices =[
-            { keepValue: true, taken: false, score: 3 },
-            { keepValue: true, taken: false, score: 3 },
-            { keepValue: true, taken: false, score: 3 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 6 },
-            { keepValue: true, taken: false, score: 1 }
-        ]
+    expect(wrapper.state().messagesVisible.invalidComposition).toBe(false);
+    wrapper.instance().throwInvalidDiceCompositionMessage();
+    expect(wrapper.state().messagesVisible.invalidComposition).toBe(true);
 
-        const result = wrapper.instance().takeScores(selectedDices);
-        expect(result).toBe(400);
-    })
+    expect(wrapper.state().messagesVisible.invalidSelection).toBe(false);
+    wrapper.instance().throwInvalidDiceSelectionMessage();
+    expect(wrapper.state().messagesVisible.invalidSelection).toBe(true);
 
-    it("should return 900 points for three times 1 and three times 6", () => {
-        const wrapper = shallow(<GameBoard/>);
-        const selectedDices =[
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 6 },
-            { keepValue: true, taken: false, score: 6 },
-            { keepValue: true, taken: false, score: 6 },
-            { keepValue: true, taken: false, score: 1 }
-        ]
+    expect(wrapper.state().messagesVisible.continuationNeeded).toBe(false);
+    wrapper.instance().throwContinuationNeededMessage();
+    expect(wrapper.state().messagesVisible.continuationNeeded).toBe(true);
 
-        const result = wrapper.instance().takeScores(selectedDices);
-        expect(result).toBe(900);
-    })
-
-    it("should return 700 points for three times 5 and three times 2", () => {
-        const wrapper = shallow(<GameBoard/>);
-        const selectedDices =[
-            { keepValue: true, taken: false, score: 5 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 5 },
-            { keepValue: true, taken: false, score: 5 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 2 }
-        ]
-
-        const result = wrapper.instance().takeScores(selectedDices);
-        expect(result).toBe(700);
-    })
-
-    it("should return 1000 points for 'the street'", () => {
-        const wrapper = shallow(<GameBoard/>);
-        const selectedDices =[
-            { keepValue: true, taken: false, score: 1 },
-            { keepValue: true, taken: false, score: 2 },
-            { keepValue: true, taken: false, score: 3 },
-            { keepValue: true, taken: false, score: 4 },
-            { keepValue: true, taken: false, score: 5 },
-            { keepValue: true, taken: false, score: 6 }
-        ]
-
-        const result = wrapper.instance().takeScores(selectedDices);
-        expect(result).toBe(1000);
-    })*/
-})
+    expect(wrapper.state().messagesVisible.winnerMessage).toBe(false);
+    wrapper.instance().throwWinnerMessage();
+    expect(wrapper.state().messagesVisible.winnerMessage).toBe(true);
+  });
+});
