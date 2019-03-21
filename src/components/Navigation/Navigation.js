@@ -44,6 +44,9 @@ export class Navigation extends React.Component {
               onClose={this.handleClose}
             >
               <MenuItem onClick={this.handleClose}>
+                <Link to={ROUTES.LANDING}>Startseite</Link>
+              </MenuItem>
+              <MenuItem onClick={this.handleClose}>
                 <Link to={ROUTES.MACKE}>Spielen</Link>
               </MenuItem>
               <MenuItem onClick={this.handleClose}>

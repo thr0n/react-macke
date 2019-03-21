@@ -45,7 +45,7 @@ class Stats extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{marginTop: "2vh"}}>
         {this.state.loading ? (
           <CircularProgress />
         ) : (

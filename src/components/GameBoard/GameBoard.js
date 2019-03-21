@@ -21,7 +21,11 @@ import { InvalidCompositionMessage } from "./Messages/InvalidCompositionMessage"
 import { ContinuationNeededMessage } from "./Messages/ContinuationNeededMessage";
 
 import { withFirebase } from "../../firebase";
-import { updateStartedGames, updateFinishedGames, updateHighscore } from "../../firebase/functions";
+import {
+  updateStartedGames,
+  updateFinishedGames,
+  updateHighscore
+} from "../../firebase/functions";
 
 import "./GameBoard.scss";
 
@@ -221,7 +225,10 @@ class GameBoard extends React.Component {
       nextState.thrown = false;
 
       updateFinishedGames(this.props.firebase);
-      updateHighscore(this.props.firebase, this.state.currentScore);
+      updateHighscore(
+        this.props.firebase,
+        this.state.players[this.state.currentPlayerId].overallScore
+      );
     }
 
     this.setState(Object.assign({}, initialState, nextState));
