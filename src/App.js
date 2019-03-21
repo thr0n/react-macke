@@ -17,7 +17,7 @@ import "./App.css";
 class App extends React.Component {
   state = {
     players: [
-      // "Hendrik", "Jessi", "Werner"
+      //  "Hendrik", "Jessi", "Werner"
     ],
     started: false
   };
@@ -41,7 +41,7 @@ class App extends React.Component {
   );
 
   renderMacke = (players, started) => (
-    <Grid item xl={8}>
+    <Grid item xs={8}>
       <div className="App" style={{ position: "relative" }}>
         {players.length === 0 && !started ? (
           this.renderPlayerManager(players)

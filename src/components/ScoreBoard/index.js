@@ -33,7 +33,7 @@ export const ScoreBoard = props => {
           <TableHead>
             <TableRow>
               {props.players.map((player, index) => (
-                <TableCell key={`{${player.player}-${index}`}>
+                <TableCell key={`{${player.player}-${index}`} align="center">
                   {player.player} ({player.wonGames})
                 </TableCell>
               ))}
@@ -44,7 +44,7 @@ export const ScoreBoard = props => {
               <TableRow key={index}>
                 {row.map((val, index) => {
                   return (
-                    <TableCell align="right" key={index}>
+                    <TableCell key={index} align="center">
                       {val}
                     </TableCell>
                   );
