@@ -4,9 +4,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import GameBoard from "./components/GameBoard/GameBoard";
 import { PlayerManager } from "./components/PlayerManager/PlayerManager";
-import { Logo } from "./components/Logo";
 import { Navigation } from "./components/Navigation/Navigation";
-import { LandingPage } from "./components/LandingPage/LadingPage";
 import Stats from "./components/Stats/Stats";
 import { updateStartedGames } from "./firebase/functions";
 
@@ -32,7 +30,7 @@ class App extends React.Component {
   startGame = players => {
     this.setState({ players, started: true });
     updateStartedGames(this.props.firebase);
-  }
+  };
 
   renderPlayerManager = players => {
     return (
@@ -48,6 +46,18 @@ class App extends React.Component {
   render() {
     const { players, started } = this.state;
 
+    const macke = () => (
+      <Grid item xl={8}>
+        <div className="App" style={{ position: "relative" }}>
+          {players.length === 0 && !started ? (
+            this.renderPlayerManager(players)
+          ) : (
+            <GameBoard players={players} />
+          )}
+        </div>
+      </Grid>
+    );
+
     return (
       <Grid
         container
@@ -57,26 +67,10 @@ class App extends React.Component {
         alignItems="center"
       >
         <Router>
-          {/* <Navigation /> */}
-          {/* <Route exact path={ROUTES.LANDING} component={LandingPage} /> */}
-
-          <Route
-            path={ROUTES.LANDING}
-            render={() => (
-              <Grid item xl={8}>
-                <div className="App" style={{ position: "relative" }}>
-                  <Logo />
-                  {players.length === 0 && !started ? (
-                    this.renderPlayerManager(players)
-                  ) : (
-                    <GameBoard players={players} />
-                  )}
-                </div>
-              </Grid>
-            )}
-          />
-          
-          {/* <Route path={ROUTES.STATS} component={Stats} /> */}
+          <Navigation />
+          <Route path={ROUTES.LANDING} exact render={macke} />
+          <Route path={ROUTES.MACKE} render={macke} />
+          <Route path={ROUTES.STATS} component={Stats} />
         </Router>
       </Grid>
     );
