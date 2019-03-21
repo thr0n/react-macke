@@ -279,13 +279,13 @@ export class GameBoardBase extends React.Component {
           rollDices={() => this.rollDices()}
           onTakeScores={() => this.takeScores()}
           onFinishMove={() => this.finishMove()}
+          onRestart={this.restartGame}
           continuationNeeded={this.state.continuationNeeded}
           firstThrow={this.state.firstThrow}
           thrown={this.state.thrown}
           canFinish={this.state.canFinish}
           canTakeScores={verifyAtLeastOneDiceIsSelected(this.state.diceStates)}
           gameOver={this.state.gameOver}
-          restart={this.restartGame}
         />
         <ScoreBoard players={this.state.players} />
         <InvalidSelectionMessage

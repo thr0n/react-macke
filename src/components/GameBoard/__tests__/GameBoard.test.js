@@ -3,10 +3,6 @@ import { mount, shallow } from "enzyme";
 import { GameBoardBase as GameBoard } from "../GameBoard";
 
 describe("GameBoard", () => {
-  beforeEach(() => {
-    jest.resetModules();
-  });
-
   it("should moint without errors", () => {
     const comp = mount(<GameBoard players={["p1", "p2"]} started />);
 
@@ -24,26 +20,7 @@ describe("GameBoard", () => {
     const wrapper = mount(<GameBoard players={["p1", "p2"]} />);
 
     expect(
-      wrapper.instance().setMessageFlag("invalidSelection", true, "any_reason")
-    );
-    expect(wrapper.state().messagesVisible.invalidSelection).toBe(true);
-
-    expect(
-      wrapper
-        .instance()
-        .setMessageFlag("invalidComposition", true, "any_reason")
-    );
-    expect(wrapper.state().messagesVisible.invalidComposition).toBe(true);
-
-    expect(
-      wrapper
-        .instance()
-        .setMessageFlag("continuationNeeded", true, "any_reason")
-    );
-    expect(wrapper.state().messagesVisible.continuationNeeded).toBe(true);
-
-    expect(
-      wrapper.instance().setMessageFlag("winnerMessage", true, "any_reason")
+      wrapper.instance().setMessageFlag("winnerMessage", true, "any_Reason")
     );
     expect(wrapper.state().messagesVisible.winnerMessage).toBe(true);
 
@@ -76,5 +53,14 @@ describe("GameBoard", () => {
     expect(wrapper.state().messagesVisible.winnerMessage).toBe(false);
     wrapper.instance().throwWinnerMessage();
     expect(wrapper.state().messagesVisible.winnerMessage).toBe(true);
+  });
+
+  it("should call the roll dices callback", () => {
+    const spy = jest.spyOn(GameBoard.prototype, "rollDices");
+    const comp = mount(<GameBoard players={["p1", "p2"]} started />);
+
+    comp.find("WithStyles(Fab)#roll-dices-button").simulate("click");
+
+    expect(spy).toHaveBeenCalled();
   });
 });
