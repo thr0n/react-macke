@@ -5,13 +5,10 @@ import { NumericStat } from "./NumericStat";
 import { PercentageStat } from "./PercentageStat";
 
 class Stats extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      gameStats: {},
-      loading: true
-    };
-  }
+  state = {
+    gameStats: {},
+    loading: true
+  };
 
   componentDidMount() {
     this.setState({ loading: true });
@@ -36,7 +33,7 @@ class Stats extends React.Component {
           label="beendet"
           value={isNaN(finishingRate) ? 0 : finishingRate}
         />
-        {highscore && <NumericStat label="Highscore" value={highscore} />}
+        {highscore > 0 && <NumericStat label="Highscore" value={highscore} />}
         {/* <NumericStat label="Längstes Spiel" value={gamesFinished} />
         <NumericStat label="Kürzestes Spiel" value={gamesFinished} /> */}
       </>
@@ -45,12 +42,8 @@ class Stats extends React.Component {
 
   render() {
     return (
-      <div style={{marginTop: "2vh"}}>
-        {this.state.loading ? (
-          <CircularProgress />
-        ) : (
-          <div>{this.renderStats()}</div>
-        )}
+      <div style={{ marginTop: "2vh" }}>
+        {this.state.loading ? <CircularProgress /> : this.renderStats()}
       </div>
     );
   }
