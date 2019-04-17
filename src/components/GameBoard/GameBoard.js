@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as _ from "lodash";
 import PropTypes from "prop-types";
+import * as shortid from "shortid";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 
 import {
@@ -35,6 +36,7 @@ const CONTINUATION_NEEDED = "continuationNeeded";
 const WINNER = "winnerMessage";
 
 const initialState = {
+  gameId: shortid.generate(),
   currentScore: 0,
   gameOver: false,
   continuationNeeded: false,
@@ -89,6 +91,7 @@ export class GameBoardBase extends React.Component {
     const init = _.cloneDeep(initialState);
 
     this.state = {
+      gameId: shortid.generate(),
       ...init,
       players: this.props.players.map(player => {
         return { player: player, overallScore: 0, moves: [], wonGames: 0 };
@@ -240,6 +243,14 @@ export class GameBoardBase extends React.Component {
 
     this.setState(Object.assign({}, initialState, nextState));
   }
+
+  componentDidMount() {
+    const currentLocation = new URL(window.location.href);
+    if (!currentLocation.searchParams.get("gameId")) {
+      window.history.replaceState(null, null, "?gameId=" + this.state.gameId);
+    }
+  }
+
   render() {
     return (
       <>
