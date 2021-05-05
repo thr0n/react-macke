@@ -25,3 +25,5 @@ yarn-error.log*
 database.rules.json
 firebase.json
 src/firebase/firebase.js
+/cypress/integration/examples/
+/.idea/

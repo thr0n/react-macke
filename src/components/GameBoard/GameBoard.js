@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as _ from "lodash";
 import PropTypes from "prop-types";
-import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 
 import {
   diceCompositionIsValid,
@@ -230,20 +229,12 @@ export class GameBoardBase extends React.Component {
     return (
       <>
         <div style={{ height: "80px" }}>
-          <ReactCSSTransitionGroup
-            className="container"
-            component="div"
-            transitionName="fade"
-            transitionEnterTimeout={1000}
-            transitionLeaveTimeout={500}
-          >
             <div key={this.state.currentPlayerId}>
               <CurrentPlayer
                 currentPlayer={this.state.players[this.state.currentPlayerId]}
                 currentScore={this.state.currentScore}
               />
             </div>
-          </ReactCSSTransitionGroup>
         </div>
         <div className="dice-container">
           {" "}

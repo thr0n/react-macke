@@ -9,9 +9,9 @@ import * as ROUTES from "../../constants/routes";
 import "./LandingPage.scss";
 
 export const LandingPage = () => (
-  <Grid
+    <Grid
     container
-    spacing={16}
+    spacing={4}
     direction="column"
     justify="center"
     alignItems="center"
