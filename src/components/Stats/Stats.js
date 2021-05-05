@@ -1,6 +1,5 @@
 import * as React from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { withFirebase } from "../../firebase";
 import { NumericStat } from "./NumericStat";
 import { PercentageStat } from "./PercentageStat";
 
@@ -11,14 +10,7 @@ class Stats extends React.Component {
   };
 
   componentDidMount() {
-    this.setState({ loading: true });
-
-    this.props.firebase.gameStats().on("value", snapshot => {
-      this.setState({
-        loading: false,
-        gameStats: snapshot.val()
-      });
-    });
+    this.setState({ loading: false });
   }
 
   renderStats = () => {
@@ -49,4 +41,4 @@ class Stats extends React.Component {
   }
 }
 
-export default withFirebase(Stats);
+export default Stats;

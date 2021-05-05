@@ -7,10 +7,8 @@ import { PlayerManager } from "./components/PlayerManager/PlayerManager";
 import { Navigation } from "./components/Navigation/Navigation";
 import { LandingPage } from "./components/LandingPage";
 import Stats from "./components/Stats/Stats";
-import { updateStartedGames } from "./firebase/functions";
 
 import * as ROUTES from "./constants/routes";
-import { withFirebase } from "./firebase";
 
 import "./App.css";
 
@@ -30,7 +28,6 @@ class App extends React.Component {
 
   startGame = players => {
     this.setState({ players, started: true });
-    updateStartedGames(this.props.firebase);
   };
 
   renderPlayerManager = players => (
@@ -74,4 +71,4 @@ class App extends React.Component {
   }
 }
 
-export default withFirebase(App);
+export default App;

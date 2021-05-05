@@ -20,13 +20,6 @@ import { InvalidSelectionMessage } from "./Messages/InvalidSelectionMessage";
 import { InvalidCompositionMessage } from "./Messages/InvalidCompositionMessage";
 import { ContinuationNeededMessage } from "./Messages/ContinuationNeededMessage";
 
-import { withFirebase } from "../../firebase";
-import {
-  updateStartedGames,
-  updateFinishedGames,
-  updateHighscore
-} from "../../firebase/functions";
-
 import "./GameBoard.scss";
 
 const INVALID_SELECTION = "invalidSelection";
@@ -141,7 +134,6 @@ export class GameBoardBase extends React.Component {
   };
 
   restartGame = () => {
-    updateStartedGames(this.props.firebase);
     this.setState({
       ..._.cloneDeep(initialState),
       players: this.props.players.map((player, index) => {
@@ -230,12 +222,6 @@ export class GameBoardBase extends React.Component {
     if (nextState.gameOver) {
       this.throwWinnerMessage();
       nextState.thrown = false;
-
-      updateFinishedGames(this.props.firebase);
-      updateHighscore(
-        this.props.firebase,
-        this.state.players[this.state.currentPlayerId].overallScore
-      );
     }
 
     this.setState(Object.assign({}, initialState, nextState));
@@ -323,4 +309,4 @@ GameBoardBase.propTypes = {
   players: PropTypes.arrayOf(PropTypes.string)
 };
 
-export default withFirebase(GameBoardBase);
+export default GameBoardBase;
