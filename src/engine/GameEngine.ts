@@ -1,9 +1,9 @@
 const TARGET_SCORE = 200;
 
-const mapDiceStateListToArray = diceStates => {
+const mapDiceStateListToArray = (diceStates: any) => {
     const scoreDist = [0, 0, 0, 0, 0, 0];
 
-    diceStates.forEach(diceState => {
+    diceStates.forEach((diceState: any) => {
         scoreDist[diceState.score - 1] = (scoreDist[diceState.score - 1] || 0) + 1;
     }, scoreDist);
 
@@ -44,7 +44,7 @@ const resetDices = () => (
     ]
 )
 
-const diceSelectionIsStreet = scoreList => {
+const diceSelectionIsStreet = (scoreList: any) => {
     const lowerStreet =
         JSON.stringify(scoreList) === JSON.stringify([1, 1, 1, 1, 1, 0]);
     const upperStreet =
@@ -55,26 +55,26 @@ const diceSelectionIsStreet = scoreList => {
     return lowerStreet || upperStreet || compleStreet;
 };
 
-const getTakenDices = diceStates => {
-    return diceStates.filter(state => state.keepValue && !state.taken);
+const getTakenDices = (diceStates: any) => {
+    return diceStates.filter((state: any) => state.keepValue && !state.taken);
 };
 
-export const continuationNeeded = diceStates => {
-    return diceStates.filter(dice => dice.taken).length === diceStates.length;
+export const continuationNeeded = (diceStates: any) => {
+    return diceStates.filter((dice: any) => dice.taken).length === diceStates.length;
 };
 
-export const diceCompositionIsValid = thrownDices => {
+export const diceCompositionIsValid = (thrownDices: any) => {
     // find dices that aren't taken yet
-    thrownDices = thrownDices.filter(dice => !dice.taken);
+    thrownDices = thrownDices.filter((dice: any) => !dice.taken);
 
     // check if there is at least one '1' or one '5'
     return (
-        thrownDices.filter(dice => dice.score === 1 || dice.score === 5).length > 0
+        thrownDices.filter((dice: any) => dice.score === 1 || dice.score === 5).length > 0
     );
 };
 
-const verifyAdditionalSpotsAreSelectedExactlyThreeTimes = additionalSpots => {
-    const additionalSelectedSpots = mapDiceStateListToArray(additionalSpots.filter(spot => spot !== 0))
+const verifyAdditionalSpotsAreSelectedExactlyThreeTimes = (additionalSpots: any) => {
+    const additionalSelectedSpots = mapDiceStateListToArray(additionalSpots.filter((spot: any) => spot !== 0))
 
     if (additionalSpots.length > 0) {
         const filtered = additionalSelectedSpots.filter(score => score === 3);
@@ -83,7 +83,7 @@ const verifyAdditionalSpotsAreSelectedExactlyThreeTimes = additionalSpots => {
     return true;
 };
 
-export const diceSelectionIsValid = takenDices => {
+export const diceSelectionIsValid = (takenDices: any) => {
     // selection must contain at least one dice
     if (takenDices.length < 1) {
         return false;
@@ -92,21 +92,21 @@ export const diceSelectionIsValid = takenDices => {
     // selection must contain at leas one '5' or one '1'
     const containstOneOrFive =
         takenDices.filter(
-            diceState => diceState.score === 5 || diceState.score === 1
+            (diceState: any) => diceState.score === 5 || diceState.score === 1
         ).length > 0;
 
     // if another number of spots is selected, it has to occur at least three times:
-    const addtionalSpots = takenDices.filter(diceState => diceState.score !== 5 && diceState.score !== 1);
+    const addtionalSpots = takenDices.filter((diceState: any) => diceState.score !== 5 && diceState.score !== 1);
     const additionalSpotsValid = verifyAdditionalSpotsAreSelectedExactlyThreeTimes(addtionalSpots);
 
     return containstOneOrFive && additionalSpotsValid;
 };
 
-export const verifyAtLeastOneDiceIsSelected = diceStates => {
+export const verifyAtLeastOneDiceIsSelected = (diceStates: any) => {
     return getTakenDices(diceStates).length > 0;
 };
 
-const getScoresByDotsAndCount = (dots, count) => {
+const getScoresByDotsAndCount = (dots: number, count: number) => {
     dots += 1; // increase the dots to match dice dots
     switch (count) {
         case 6:
@@ -125,18 +125,18 @@ const getScoresByDotsAndCount = (dots, count) => {
     }
 }
 
-const calculateScores = scoreList => {
+const calculateScores = (scoreList: any) => {
     let currentScore = 0;
 
-    scoreList.forEach((count, dots) => {
+    scoreList.forEach((count: number, dots: number) => {
         currentScore += getScoresByDotsAndCount(dots, count);
     });
 
     return currentScore;
 };
 
-const handleStreet = (selectedDices, currentScore, nextState, diceStates) => {
-    selectedDices.map(dice => (dice.taken = true));
+const handleStreet = (selectedDices: any, currentScore: any, nextState: any, diceStates: any) => {
+    selectedDices.map((dice: any) => (dice.taken = true));
     nextState = {
         ...nextState,
         thrown: false,
@@ -148,8 +148,8 @@ const handleStreet = (selectedDices, currentScore, nextState, diceStates) => {
     return nextState;
 };
 
-const handleInvalidSelection = (diceStates, nextState) => {
-    diceStates.forEach(dice => {
+const handleInvalidSelection = (diceStates: any, nextState: any) => {
+    diceStates.forEach((dice: any) => {
         if (dice.keepValue && !dice.taken) {
             dice.keepValue = false; // reset the invalid selection
         }
@@ -161,16 +161,16 @@ const handleInvalidSelection = (diceStates, nextState) => {
     };
 };
 
-const markAsTaken = selectedDices => {
-    return selectedDices.map(dice => (dice.taken = true));
+const markAsTaken = (selectedDices: any) => {
+    return selectedDices.map((dice: any) => (dice.taken = true));
 };
 
-export const processTakeScores = (diceStates, currentScore) => {
+export const processTakeScores = (diceStates: any, currentScore: any) => {
     const selectedDices = getTakenDices(diceStates);
     const scoreList = mapDiceStateListToArray(selectedDices);
     const validSelection = diceSelectionIsValid(selectedDices);
 
-    let nextState = {
+    const nextState = {
         validSelection
     };
 
@@ -193,7 +193,7 @@ export const processTakeScores = (diceStates, currentScore) => {
     };
 };
 
-export const processInvalidComposition = (currentPlayerId, players) => {
+export const processInvalidComposition = (currentPlayerId: any, players: any) => {
     players[currentPlayerId].moves.push("–")
 
     const nextState = {
@@ -205,11 +205,11 @@ export const processInvalidComposition = (currentPlayerId, players) => {
     return nextState;
 }
 
-export const switchToNextPlayer = (currentPlayerId, numberOfPlayers) => {
+export const switchToNextPlayer = (currentPlayerId: any, numberOfPlayers: number) => {
     return (currentPlayerId === numberOfPlayers - 1) ? 0 : currentPlayerId + 1
 }
 
-export const processFinishMove = (currentPlayerId, players, currentScore) => {
+export const processFinishMove = (currentPlayerId: any, players: any, currentScore: number) => {
     const newOverallScore = players[currentPlayerId].overallScore += currentScore;
     const gameOver = newOverallScore >= TARGET_SCORE;
 
