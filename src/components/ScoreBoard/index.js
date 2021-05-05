@@ -9,11 +9,11 @@ import Paper from "@material-ui/core/Paper";
 import "./ScoreBoard.scss";
 
 const getNthRow = (index, players) => {
-  return players.map(player => player.moves[index]);
+  return players.map((player) => player.moves[index]);
 };
 
-export const ScoreBoard = props => {
-  const createRows = players => {
+export const ScoreBoard = (props) => {
+  const createRows = (players) => {
     const rows = [];
 
     players[0].moves.forEach((move, index) => {
@@ -26,7 +26,7 @@ export const ScoreBoard = props => {
 
   const rows = createRows(props.players);
 
-  return (  
+  return (
     <div className="scoreboard">
       <Paper>
         <Table>

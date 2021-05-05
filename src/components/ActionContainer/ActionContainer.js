@@ -3,7 +3,7 @@ import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import { Fab } from "@material-ui/core";
 
-export const ActionContainer = props => {
+export const ActionContainer = (props) => {
   const renderGameActions = () => {
     return (
       <div>
@@ -43,7 +43,12 @@ export const ActionContainer = props => {
   };
 
   const renderRestartButton = () => (
-    <Button id="restart-button" variant="contained" color="primary" onClick={() => props.onRestart()}>
+    <Button
+      id="restart-button"
+      variant="contained"
+      color="primary"
+      onClick={() => props.onRestart()}
+    >
       <Icon>refresh</Icon> Spiel neu starten
     </Button>
   );

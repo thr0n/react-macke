@@ -9,48 +9,47 @@ import * as ROUTES from "../../constants/routes";
 import "./LandingPage.scss";
 
 export const LandingPage = () => (
-  
-    <Grid
-      container
-      spacing={16}
-      direction="column"
-      justify="center"
-      alignItems="center"
-      style={{ marginTop: "2vh" }}
-    >
-      <Grid item xs={12} className="nav-button">
-        <Button
-          variant="contained"
-          color="primary"
-          component={Link}
-          to={ROUTES.MACKE}
-        >
-          <Icon>refresh</Icon>
-          {""}Spiel starten
-        </Button>
-      </Grid>
-      <Grid item xs={12} className="nav-button">
-        <Button
-          variant="contained"
-          color="secondary"
-          component={Link}
-          to={ROUTES.STATS}
-        >
-          <Icon>equalizer</Icon>
-          {""}Statistiken
-        </Button>
-      </Grid>
-      <Grid item xs={12}>
-        <Button
-          variant="contained"
-          color="secondary"
-          component={Link}
-          to={ROUTES.HOWTO}
-          disabled
-        >
-          <Icon>help</Icon>
-          {""}How To
-        </Button>
-      </Grid>
+  <Grid
+    container
+    spacing={16}
+    direction="column"
+    justify="center"
+    alignItems="center"
+    style={{ marginTop: "2vh" }}
+  >
+    <Grid item xs={12} className="nav-button">
+      <Button
+        variant="contained"
+        color="primary"
+        component={Link}
+        to={ROUTES.MACKE}
+      >
+        <Icon>refresh</Icon>
+        {""}Spiel starten
+      </Button>
     </Grid>
+    <Grid item xs={12} className="nav-button">
+      <Button
+        variant="contained"
+        color="secondary"
+        component={Link}
+        to={ROUTES.STATS}
+      >
+        <Icon>equalizer</Icon>
+        {""}Statistiken
+      </Button>
+    </Grid>
+    <Grid item xs={12}>
+      <Button
+        variant="contained"
+        color="secondary"
+        component={Link}
+        to={ROUTES.HOWTO}
+        disabled
+      >
+        <Icon>help</Icon>
+        {""}How To
+      </Button>
+    </Grid>
+  </Grid>
 );

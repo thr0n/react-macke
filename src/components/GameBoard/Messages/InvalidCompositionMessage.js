@@ -2,7 +2,7 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import Snackbar from "@material-ui/core/Snackbar";
 
-export const InvalidCompositionMessage = props => (
+export const InvalidCompositionMessage = (props) => (
   <Snackbar
     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
     autoHideDuration={6000}
@@ -20,5 +20,5 @@ export const InvalidCompositionMessage = props => (
 InvalidCompositionMessage.propTypes = {
   open: PropTypes.bool,
   nextPlayer: PropTypes.string,
-  handleClose: PropTypes.func
+  handleClose: PropTypes.func,
 };

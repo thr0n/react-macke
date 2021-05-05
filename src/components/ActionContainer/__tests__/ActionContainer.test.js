@@ -5,9 +5,7 @@ import { ActionContainer } from "../ActionContainer";
 describe("ActionContainer", () => {
   it("should call throw dices callback", () => {
     const rollDiceSpy = jest.fn();
-    const wrapper = mount(
-      <ActionContainer rollDices={rollDiceSpy} />
-    );
+    const wrapper = mount(<ActionContainer rollDices={rollDiceSpy} />);
 
     wrapper.find("Fab#roll-dices-button").simulate("click");
     expect(rollDiceSpy).toHaveBeenCalled();

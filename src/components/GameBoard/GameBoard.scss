@@ -1,43 +1,43 @@
 .dice-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    // height: 10vh;
-    margin-top: 1.5vh;
-    margin-bottom: 3vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // height: 10vh;
+  margin-top: 1.5vh;
+  margin-bottom: 3vh;
 }
 
 .action-container {
-    margin-bottom: 1vh;
+  margin-bottom: 1vh;
 
-    button {
-        margin-right: 3px;
-        margin-left: 3px;
-    }
+  button {
+    margin-right: 3px;
+    margin-left: 3px;
+  }
 }
 
 .container {
-    position: relative;
+  position: relative;
 }
 .container > div {
-    width: 100%;
-    position: absolute;
+  width: 100%;
+  position: absolute;
 }
 
 .fade-enter {
-    opacity: 0.01;
+  opacity: 0.01;
 }
 
 .fade-enter.fade-enter-active {
-    opacity: 1;
-    transition: opacity 500ms ease-in;
+  opacity: 1;
+  transition: opacity 500ms ease-in;
 }
 
 .fade-leave {
-    opacity: 1;
+  opacity: 1;
 }
 
 .fade-leave.fade-leave-active {
-    opacity: 0.01;
-    transition: opacity 300ms ease-in;
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
 }

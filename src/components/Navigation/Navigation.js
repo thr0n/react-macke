@@ -14,10 +14,10 @@ import "./Navigation.scss";
 
 export class Navigation extends React.Component {
   state = {
-    anchorEl: null
+    anchorEl: null,
   };
 
-  handleClick = event => {
+  handleClick = (event) => {
     this.setState({ anchorEl: event.currentTarget });
   };
 

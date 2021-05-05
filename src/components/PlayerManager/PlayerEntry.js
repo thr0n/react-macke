@@ -3,7 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import TextField from "@material-ui/core/TextField";
 
-export const PlayerEntry = props => (
+export const PlayerEntry = (props) => (
   <Grid
     container
     alignItems="flex-end"
@@ -21,7 +21,7 @@ export const PlayerEntry = props => (
         label="Name"
         fullWidth
         value={props.playerName}
-        onChange={event => {
+        onChange={(event) => {
           props.onChange(event.target.value);
         }}
       />

@@ -7,8 +7,8 @@ import { Grid } from "@material-ui/core";
 
 import "./CurrentPlayer.scss";
 
-export const CurrentPlayer = props => {
-  const getImageForPlayer = player => {
+export const CurrentPlayer = (props) => {
+  const getImageForPlayer = (player) => {
     switch (player) {
       case "Jessi":
       case "Jessica":
@@ -44,5 +44,5 @@ export const CurrentPlayer = props => {
 CurrentPlayer.propTypes = {
   playerName: PropTypes.string,
   currentScore: PropTypes.number,
-  overallScore: PropTypes.number
+  overallScore: PropTypes.number,
 };

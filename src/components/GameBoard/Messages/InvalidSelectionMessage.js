@@ -2,7 +2,7 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import Snackbar from "@material-ui/core/Snackbar";
 
-export const InvalidSelectionMessage = props => (
+export const InvalidSelectionMessage = (props) => (
   <Snackbar
     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
     autoHideDuration={6000}
@@ -19,5 +19,5 @@ export const InvalidSelectionMessage = props => (
 
 InvalidSelectionMessage.propTypes = {
   open: PropTypes.bool,
-  handleClose: PropTypes.func
+  handleClose: PropTypes.func,
 };

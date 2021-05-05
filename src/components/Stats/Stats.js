@@ -6,7 +6,7 @@ import { PercentageStat } from "./PercentageStat";
 class Stats extends React.Component {
   state = {
     gameStats: {},
-    loading: true
+    loading: true,
   };
 
   componentDidMount() {

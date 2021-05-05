@@ -8,7 +8,7 @@ export class PlayerManager extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      players: [""]
+      players: [""],
     };
   }
 
@@ -25,7 +25,7 @@ export class PlayerManager extends React.Component {
     this.setState({ players: currentPlayers });
   };
 
-  deletePlayer = index => {
+  deletePlayer = (index) => {
     if (index > 0 || this.state.players.length > 1) {
       const currentPlayers = this.state.players;
       currentPlayers.splice(index, 1);
@@ -35,11 +35,11 @@ export class PlayerManager extends React.Component {
     }
   };
 
-  getPlayers = players => {
-    return players.filter(player => player !== "");
-  }
+  getPlayers = (players) => {
+    return players.filter((player) => player !== "");
+  };
 
-  getPlayerCount = players => {
+  getPlayerCount = (players) => {
     return this.getPlayers(players).length;
   };
 
@@ -59,7 +59,7 @@ export class PlayerManager extends React.Component {
             <PlayerEntry
               key={index}
               playerName={player}
-              onChange={playerName => this.addPlayer(playerName, index)}
+              onChange={(playerName) => this.addPlayer(playerName, index)}
               onDelete={() => this.deletePlayer(index)}
             />
           ))}
@@ -70,7 +70,9 @@ export class PlayerManager extends React.Component {
             <Fab
               color="primary"
               disabled={this.getPlayerCount(this.state.players) < 2}
-              onClick={() => this.props.onStart(this.getPlayers(this.state.players))}
+              onClick={() =>
+                this.props.onStart(this.getPlayers(this.state.players))
+              }
             >
               Start
             </Fab>

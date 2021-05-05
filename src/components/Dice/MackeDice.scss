@@ -1,31 +1,31 @@
 .macke-dice {
-    height: 50px;
-    width: 50px;
-    display: flex;
-    background-color: cornsilk;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid black;
-    cursor: pointer;
-    float: left;
-    margin-left: 5px;
-    margin-right: 0.3vw;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  background-color: cornsilk;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  cursor: pointer;
+  float: left;
+  margin-left: 5px;
+  margin-right: 0.3vw;
 
-    &.keep {
-        box-shadow: 0px 0px 2px 2px lightblue;
-    }
+  &.keep {
+    box-shadow: 0px 0px 2px 2px lightblue;
+  }
 
-    &.do-not-keep {
-        // box-shadow: 0px 0px 2px 2px lightblue;
-    }
+  &.do-not-keep {
+    // box-shadow: 0px 0px 2px 2px lightblue;
+  }
 
-    &.used {
-        box-shadow: 0px 0px 2px 2px lightcoral;     
-        cursor: not-allowed;   
-    }
+  &.used {
+    box-shadow: 0px 0px 2px 2px lightcoral;
+    cursor: not-allowed;
+  }
 
-    &.not-selectable {
-        background-color: lightgray;
-        cursor: not-allowed;
-    }
+  &.not-selectable {
+    background-color: lightgray;
+    cursor: not-allowed;
+  }
 }

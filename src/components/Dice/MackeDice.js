@@ -2,7 +2,7 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import "./MackeDice.scss";
 
-export const getClassName = props => {
+export const getClassName = (props) => {
   if (props.taken) {
     return "used";
   } else if (!props.clickable) {
@@ -13,7 +13,7 @@ export const getClassName = props => {
   return "do-not-keep";
 };
 
-export const MackeDice = props => {
+export const MackeDice = (props) => {
   return (
     <span
       className={"macke-dice " + getClassName(props)}
@@ -34,5 +34,5 @@ MackeDice.propTypes = {
   keepValue: PropTypes.bool,
   taken: PropTypes.bool,
   clickable: PropTypes.bool,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 };

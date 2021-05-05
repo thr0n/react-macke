@@ -17,23 +17,23 @@ class App extends React.Component {
     players: [
       //  "Hendrik", "Jessi", "Werner"
     ],
-    started: false
+    started: false,
   };
 
-  addPlayer = playerName => {
+  addPlayer = (playerName) => {
     const currentPlayers = this.state.players;
     currentPlayers.push(playerName);
     this.setState({ players: currentPlayers });
   };
 
-  startGame = players => {
+  startGame = (players) => {
     this.setState({ players, started: true });
   };
 
-  renderPlayerManager = players => (
+  renderPlayerManager = (players) => (
     <PlayerManager
-      onAdd={playerName => this.addPlayer(playerName)}
-      onStart={players => this.startGame(players)}
+      onAdd={(playerName) => this.addPlayer(playerName)}
+      onStart={(players) => this.startGame(players)}
     />
   );
 
@@ -63,7 +63,10 @@ class App extends React.Component {
         <Router>
           <Navigation />
           <Route path={ROUTES.LANDING} exact component={LandingPage} />
-          <Route path={ROUTES.MACKE} render={() => this.renderMacke(players, started)} />
+          <Route
+            path={ROUTES.MACKE}
+            render={() => this.renderMacke(players, started)}
+          />
           <Route path={ROUTES.STATS} component={Stats} />
         </Router>
       </Grid>

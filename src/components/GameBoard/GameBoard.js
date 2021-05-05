@@ -8,7 +8,7 @@ import {
   verifyAtLeastOneDiceIsSelected,
   processTakeScores,
   processFinishMove,
-  processInvalidComposition
+  processInvalidComposition,
 } from "../../engine/GameEngine";
 
 import { MackeDice } from "../Dice/MackeDice";
@@ -39,40 +39,40 @@ const initialState = {
     {
       keepValue: false,
       taken: false,
-      score: 1
+      score: 1,
     },
     {
       keepValue: false,
       taken: false,
-      score: 3
+      score: 3,
     },
     {
       keepValue: false,
       taken: false,
-      score: 4
+      score: 4,
     },
     {
       keepValue: false,
       taken: false,
-      score: 6
+      score: 6,
     },
     {
       keepValue: false,
       taken: false,
-      score: 2
+      score: 2,
     },
     {
       keepValue: false,
       taken: false,
-      score: 5
-    }
+      score: 5,
+    },
   ],
   messagesVisible: {
     invalidSelection: false,
     invalidComposition: false,
     winnerMessage: false,
-    continuationNeeded: false
-  }
+    continuationNeeded: false,
+  },
 };
 
 export class GameBoardBase extends React.Component {
@@ -83,10 +83,10 @@ export class GameBoardBase extends React.Component {
 
     this.state = {
       ...init,
-      players: this.props.players.map(player => {
+      players: this.props.players.map((player) => {
         return { player: player, overallScore: 0, moves: [], wonGames: 0 };
       }),
-      currentPlayerId: 0
+      currentPlayerId: 0,
     };
   }
 
@@ -141,10 +141,10 @@ export class GameBoardBase extends React.Component {
           player: player,
           overallScore: 0,
           moves: [],
-          wonGames: this.state.players[index].wonGames
+          wonGames: this.state.players[index].wonGames,
         };
       }),
-      currentPlayerId: 0
+      currentPlayerId: 0,
     });
   };
 
@@ -153,7 +153,7 @@ export class GameBoardBase extends React.Component {
     const currentStates = this.state.diceStates;
 
     if (this.state.continuationNeeded) {
-      currentStates.forEach(state => {
+      currentStates.forEach((state) => {
         state.score = generateNewValue();
         state.keepValue = false;
         state.taken = false;
@@ -170,7 +170,7 @@ export class GameBoardBase extends React.Component {
     this.setState({
       thrown: true,
       firstThrow: false,
-      diceStates: currentStates
+      diceStates: currentStates,
     });
 
     if (!diceCompositionIsValid(this.state.diceStates)) {
@@ -189,7 +189,7 @@ export class GameBoardBase extends React.Component {
     const diceStates = this.state.diceStates;
     diceStates[diceId].keepValue = keepValue;
     this.setState({
-      diceStates
+      diceStates,
     });
   }
 
@@ -212,7 +212,7 @@ export class GameBoardBase extends React.Component {
 
   updateScores(diceStates) {
     this.setState({
-      diceStates: diceStates
+      diceStates: diceStates,
     });
   }
 
@@ -306,7 +306,7 @@ export class GameBoardBase extends React.Component {
 }
 
 GameBoardBase.propTypes = {
-  players: PropTypes.arrayOf(PropTypes.string)
+  players: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default GameBoardBase;

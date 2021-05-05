@@ -7,6 +7,7 @@
 - [ ] Apply recent React best practices
 
 - Find alternatives to the following libraries:
+
   - [ ] react-addons-css-transition-group
   - [ ] mixin-deep
 
@@ -14,4 +15,3 @@
   - [ ] lodash
   - [ ] lodash.mergeWith
   - [ ] lodash.template
-
