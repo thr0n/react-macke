@@ -148,7 +148,7 @@ export class GameBoardBase extends React.Component {
   };
 
   rollDices() {
-    const generateNewValue = () => Math.floor(Math.random() * 6) + 1;
+    const generateNewValue = () => PRODUCTION ? Math.floor(Math.random() * 6) + 1 : 1;
     const currentStates = this.state.diceStates;
 
     if (this.state.continuationNeeded) {

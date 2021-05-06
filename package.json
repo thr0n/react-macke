@@ -11,10 +11,10 @@
   },
   "scripts": {
     "build": "webpack",
+    "cypress": "cypress open",
     "lint": "eslint .",
     "start": "webpack serve --open",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "test:e2e": "cypress open-ct"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -50,6 +50,7 @@
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.1",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.4",
+    "cypress": "^7.2.0",
     "enzyme": "^3.11.0",
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",
