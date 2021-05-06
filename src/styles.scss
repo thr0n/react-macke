@@ -1,0 +1,16 @@
+@import "../node_modules/nes.css/css/nes.css";
+
+@font-face {
+  font-family: 'Press Start 2P';
+  font-style: normal;
+  font-weight: 400;
+  src: local(''),
+  url('../assets/fonts/PressStart2P-Regular.ttf') format('truetype')
+}
+
+* {
+  // font-family: "Press Start 2P", serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

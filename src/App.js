@@ -10,7 +10,7 @@ import Stats from "./components/Stats/Stats";
 
 import * as ROUTES from "./constants/routes";
 
-import "./App.css";
+import "./styles.scss";
 
 class App extends React.Component {
   state = {
