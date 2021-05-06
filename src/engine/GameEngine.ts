@@ -247,7 +247,7 @@ export const processFinishMove = (
     players[currentPlayerId].wonGames++;
     return {
       gameOver,
-      currentScore: newOverallScore,
+      currentScore,
       thrown: true,
       players,
     };
