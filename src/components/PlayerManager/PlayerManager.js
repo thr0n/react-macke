@@ -1,38 +1,22 @@
 import React from "react";
 
-import { PlayerEntry } from "./PlayerEntry";
-
 export class PlayerManager extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      n: "",
-    };
   }
 
-  addPlayer = (playerName, index) => {
-    //console.log(`Adding player ${playerName} to ...`);
-    //console.log(this.props.players);
+  handleBlur = (playerName, index) => {
+    console.log("BLUR")
+    console.log(`${index}: ${playerName}`)
 
-    this.props.onAdd(playerName);
-    //this.props.players[index] = playerName;
-    // if (this.shouldAddNewPlaceHolder(this.props.players, index, playerName)) {
-    //if (this.props.players.length < 3) {
-    //  console.log('Adding empty name!')
-    //this.props.onAdd("");
-    //} else if (playerName === "") {
-    // this.deletePlayer(index);
-    //}
-  };
+    this.props.onAdd(index, playerName)
 
-  deletePlayer = (index) => {};
-
-  getPlayers = (players) => {
-    return players.filter((player) => player !== "");
-  };
-
-  getPlayerCount = (players) => {
-    return this.getPlayers(players).length;
+    /*console.log("index = " + index);
+    if (playerName === "") {
+      this.props.onRemove(index);
+      return;
+    }
+    this.props.onAdd(playerName);*/
   };
 
   shouldAddNewPlaceHolder(currentPlayers, index, playerName) {
@@ -43,23 +27,28 @@ export class PlayerManager extends React.Component {
     );
   }
 
+  getPlayers = (players) => {
+    return players.filter((player) => player !== "");
+  };
+
+  getPlayerCount = (players) => {
+    return this.getPlayers(players).length;
+  };
+
   render() {
     return (
       <div>
         {this.props.players.map((player, index) => (
-          <div className="nes-field">
+          <div className="nes-field" key={index}>
             <label htmlFor="name_field">Your name</label>
             <input
-              key={index}
               type="text"
               id="name_field"
               className="nes-input"
               onBlur={(event) => {
-                this.addPlayer(event.target.value);
-                this.setState({ n: "" });
+                this.handleBlur(event.target.value, index);
               }}
             />
-            {player}
           </div>
         ))}
         <div>

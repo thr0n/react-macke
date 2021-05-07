@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Should render without crashing 1`] = `
+Array [
+  <div
+    className="navigation-container"
+  >
+    <h1>
+      react-macke
+    </h1>
+    <div
+      className="sub-headline"
+    >
+      <i
+        className="nes-icon trophy is-medium"
+      />
+      <span>
+        Das beliebte Würfelspiel!
+      </span>
+    </div>
+  </div>,
+  <div
+    className="app-container"
+  >
+    <div
+      className="landingpage-container"
+    >
+      <a
+        href="/macke"
+        onClick={[Function]}
+      >
+        <button
+          className="nes-btn is-primary"
+          type="button"
+        >
+          
+          Spiel starten
+        </button>
+      </a>
+      <a
+        href="/stats"
+        onClick={[Function]}
+      >
+        <button
+          className="nes-btn is-success"
+          type="button"
+        >
+          
+          Statistiken
+        </button>
+      </a>
+      <button
+        className="nes-btn is-disabled"
+        type="button"
+      >
+        
+        How To
+      </button>
+    </div>
+  </div>,
+]
+`;

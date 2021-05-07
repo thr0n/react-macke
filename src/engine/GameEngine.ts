@@ -1,5 +1,6 @@
 const TARGET_SCORE = 700;
 
+// Würfelwerte nach Augen zählen
 const mapDiceStateListToArray = (diceStates: any) => {
   const scoreDist = [0, 0, 0, 0, 0, 0];
 
@@ -48,10 +49,7 @@ const diceSelectionIsStreet = (scoreList: any) => {
     JSON.stringify(scoreList) === JSON.stringify([1, 1, 1, 1, 1, 0]);
   const upperStreet =
     JSON.stringify(scoreList) === JSON.stringify([0, 1, 1, 1, 1, 1]);
-  const compleStreet =
-    JSON.stringify(scoreList) === JSON.stringify([1, 1, 1, 1, 1, 1]);
-
-  return lowerStreet || upperStreet || compleStreet;
+  return lowerStreet || upperStreet;
 };
 
 const getTakenDices = (diceStates: any) => {
@@ -180,7 +178,7 @@ const markAsTaken = (selectedDices: any) => {
   return selectedDices.map((dice: any) => (dice.taken = true));
 };
 
-export const processTakeScores = (diceStates: any, currentScore: any) => {
+export const processTakeScores = (diceStates: any, currentScore: number) => {
   const selectedDices = getTakenDices(diceStates);
   const scoreList = mapDiceStateListToArray(selectedDices);
   const validSelection = diceSelectionIsValid(selectedDices);

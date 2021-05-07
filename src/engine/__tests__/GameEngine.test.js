@@ -233,49 +233,6 @@ describe("GameEngine", () => {
     expect(result.currentScore).toBe(1100);
   });
 
-  it("should return 2000 points for 'the complete street'", () => {
-    const testState = {
-      currentScore: 0,
-      diceStates: [
-        {
-          score: 1,
-          keepValue: true,
-          taken: false,
-        },
-        {
-          score: 2,
-          keepValue: true,
-          taken: false,
-        },
-        {
-          score: 3,
-          keepValue: true,
-          taken: false,
-        },
-        {
-          score: 4,
-          keepValue: true,
-          taken: false,
-        },
-        {
-          score: 5,
-          keepValue: true,
-          taken: false,
-        },
-        {
-          score: 6,
-          keepValue: true,
-          taken: false,
-        },
-      ],
-    };
-    const result = processTakeScores(
-      testState.diceStates,
-      testState.currentScore
-    );
-    expect(result.currentScore).toBe(2000);
-  });
-
   it("should return 100 points for a single 1", () => {
     const testState = {
       currentScore: 0,
@@ -765,7 +722,7 @@ describe("GameEngine", () => {
     };
 
     const expected = {
-      currentScore: 5050,
+      currentScore: 50,
       gameOver: true,
       thrown: true,
       players: [

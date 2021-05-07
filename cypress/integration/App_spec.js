@@ -1,5 +1,5 @@
-describe('My First Test', () => {
-  it('Does not do much!', () => {
+describe('Workflow test', () => {
+  it('Ensure basic functionality', () => {
     cy.visit("http://localhost:3000")
 
     cy.contains("Spiel starten").click()
