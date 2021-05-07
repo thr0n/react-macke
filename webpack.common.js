@@ -1,6 +1,5 @@
-var path = require("path");
-const { DefinePlugin } = require("webpack");
-var HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: "./src/index.js",
@@ -54,7 +53,6 @@ module.exports = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
-  mode: "development",
   plugins: [
     new HtmlWebpackPlugin({
       template: "src/index.html",

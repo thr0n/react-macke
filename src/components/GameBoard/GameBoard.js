@@ -148,7 +148,10 @@ export class GameBoardBase extends React.Component {
   };
 
   rollDices() {
-    const generateNewValue = () => PRODUCTION ? Math.floor(Math.random() * 6) + 1 : 1;
+    const generateNewValue = () =>
+      process.env.NODE_ENV === "development"
+        ? 1
+        : Math.floor(Math.random() * 6) + 1;
     const currentStates = this.state.diceStates;
 
     if (this.state.continuationNeeded) {
@@ -229,12 +232,12 @@ export class GameBoardBase extends React.Component {
     return (
       <>
         <div style={{ height: "80px" }}>
-            <div key={this.state.currentPlayerId}>
-              <CurrentPlayer
-                currentPlayer={this.state.players[this.state.currentPlayerId]}
-                currentScore={this.state.currentScore}
-              />
-            </div>
+          <div key={this.state.currentPlayerId}>
+            <CurrentPlayer
+              currentPlayer={this.state.players[this.state.currentPlayerId]}
+              currentScore={this.state.currentScore}
+            />
+          </div>
         </div>
         <div className="dice-container">
           {" "}

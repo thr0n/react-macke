@@ -4,7 +4,7 @@
 
 .sub-headline {
   display: grid;
-  grid-template-columns: 1fr 100%;
+  grid-template-columns: 50px auto;
   column-gap: 16px;
   text-align: center;
   align-items: center;

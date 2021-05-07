@@ -7,7 +7,7 @@ export const Header = () => {
     <div className="navigation-container">
       <h1>react-macke</h1>
       <div className="sub-headline">
-        <i className="nes-icon trophy is-medium"/>
+        <i className="nes-icon trophy is-medium" />
         <span>Das beliebte Würfelspiel!</span>
       </div>
     </div>

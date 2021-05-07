@@ -13,7 +13,7 @@ export class PlayerManager extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    this.props.onStart(this.state.players);
+    this.props.onStart(this.state.players.filter((p) => p !== ""));
   };
 
   handleChange = (event, index) => {
