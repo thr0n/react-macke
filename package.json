@@ -12,7 +12,7 @@
   "scripts": {
     "build": "webpack",
     "cypress": "cypress open",
-    "lint": "eslint .",
+    "lint": "eslint ./src/",
     "start": "webpack serve --open",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -37,6 +37,7 @@
     "@types/node": "^15.0.2",
     "@types/react": "^17.0.5",
     "@types/react-dom": "^17.0.3",
+    "@types/react-router-dom": "^5.1.7",
     "nes.css": "^2.3.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

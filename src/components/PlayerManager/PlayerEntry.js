@@ -7,7 +7,7 @@ export const PlayerEntry = (props) => (
   <Grid
     container
     alignItems="flex-end"
-    spacing={16}
+    spacing={10}
     direction="row"
     justify="center"
   >

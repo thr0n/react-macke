@@ -1,6 +1,4 @@
-import * as React from "react";
-import Grid from "@material-ui/core/Grid";
-import Fab from "@material-ui/core/Fab";
+import React from "react";
 
 import { PlayerEntry } from "./PlayerEntry";
 
@@ -8,32 +6,26 @@ export class PlayerManager extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      players: [""],
+      n: "",
     };
   }
 
   addPlayer = (playerName, index) => {
-    const currentPlayers = this.state.players;
+    //console.log(`Adding player ${playerName} to ...`);
+    //console.log(this.props.players);
 
-    currentPlayers[index] = playerName;
-    if (this.shouldAddNewPlaceHolder(currentPlayers, index, playerName)) {
-      currentPlayers.push("");
-    } else if (playerName === "") {
-      this.deletePlayer(index);
-    }
-
-    this.setState({ players: currentPlayers });
+    this.props.onAdd(playerName);
+    //this.props.players[index] = playerName;
+    // if (this.shouldAddNewPlaceHolder(this.props.players, index, playerName)) {
+    //if (this.props.players.length < 3) {
+    //  console.log('Adding empty name!')
+    //this.props.onAdd("");
+    //} else if (playerName === "") {
+    // this.deletePlayer(index);
+    //}
   };
 
-  deletePlayer = (index) => {
-    if (index > 0 || this.state.players.length > 1) {
-      const currentPlayers = this.state.players;
-      currentPlayers.splice(index, 1);
-      this.setState({ players: currentPlayers });
-    } else {
-      this.setState({ players: "" });
-    }
-  };
+  deletePlayer = (index) => {};
 
   getPlayers = (players) => {
     return players.filter((player) => player !== "");
@@ -53,32 +45,35 @@ export class PlayerManager extends React.Component {
 
   render() {
     return (
-      <Grid container spacing={16} direction="column" justify="flex-start">
-        <Grid item xs={12}>
-          {this.state.players.map((player, index) => (
-            <PlayerEntry
+      <div>
+        {this.props.players.map((player, index) => (
+          <div className="nes-field">
+            <label htmlFor="name_field">Your name</label>
+            <input
               key={index}
-              playerName={player}
-              onChange={(playerName) => this.addPlayer(playerName, index)}
-              onDelete={() => this.deletePlayer(index)}
+              type="text"
+              id="name_field"
+              className="nes-input"
+              onBlur={(event) => {
+                this.addPlayer(event.target.value);
+                this.setState({ n: "" });
+              }}
             />
-          ))}
-        </Grid>
-
-        <Grid container direction="row" justify="flex-end">
-          <Grid item>
-            <Fab
-              color="primary"
-              disabled={this.getPlayerCount(this.state.players) < 2}
-              onClick={() =>
-                this.props.onStart(this.getPlayers(this.state.players))
-              }
-            >
-              Start
-            </Fab>
-          </Grid>
-        </Grid>
-      </Grid>
+            {player}
+          </div>
+        ))}
+        <div>
+          <button
+            color="primary"
+            disabled={this.getPlayerCount(this.props.players) < 2}
+            onClick={() =>
+              this.props.onStart(this.getPlayers(this.props.players))
+            }
+          >
+            Start
+          </button>
+        </div>
+      </div>
     );
   }
 }

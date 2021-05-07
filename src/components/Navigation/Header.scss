@@ -1,0 +1,13 @@
+.navigation-container {
+  padding: 0 0 8px 4px;
+}
+
+.sub-headline {
+  display: grid;
+  grid-template-columns: 1fr 100%;
+  column-gap: 16px;
+  text-align: center;
+  span {
+    text-align: left;
+  }
+}

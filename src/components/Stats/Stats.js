@@ -3,7 +3,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { NumericStat } from "./NumericStat";
 import { PercentageStat } from "./PercentageStat";
 
-class Stats extends React.Component {
+export class Stats extends React.Component {
   state = {
     gameStats: {},
     loading: true,
@@ -40,5 +40,3 @@ class Stats extends React.Component {
     );
   }
 }
-
-export default Stats;

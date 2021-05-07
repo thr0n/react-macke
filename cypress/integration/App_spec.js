@@ -5,8 +5,8 @@ describe('My First Test', () => {
     cy.contains("Spiel starten").click()
     cy.url().should('include', '/macke')
 
-    cy.get(".MuiInput-formControl").type("Hendrik")
-    cy.get("input").eq(1).type("Jessica")
+    cy.get("input").type("Hendrik").blur()
+    cy.get("input").eq(1).type("Jessica").blur()
     cy.contains("Start").click()
 
     // Hendrik's first move
