@@ -3,66 +3,63 @@ import React from "react";
 export class PlayerManager extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      players: [""],
+    };
   }
 
-  handleBlur = (playerName, index) => {
-    console.log("BLUR")
-    console.log(`${index}: ${playerName}`)
+  inputIsMissing = (players) =>
+    players.length < 4 && players[players.length - 1] !== "";
 
-    this.props.onAdd(index, playerName)
+  handleSubmit = (event) => {
+    event.preventDefault();
+    this.props.onStart(this.state.players);
+  };
 
-    /*console.log("index = " + index);
-    if (playerName === "") {
-      this.props.onRemove(index);
+  handleChange = (event, index) => {
+    const newName = event.target.value;
+    const players = this.state.players;
+
+    if (newName === "" && index !== players.length - 1) {
+      players.splice(index, 1);
+      this.setState({ players });
+
+      if (this.inputIsMissing(players)) {
+        players.push("");
+      }
       return;
     }
-    this.props.onAdd(playerName);*/
-  };
 
-  shouldAddNewPlaceHolder(currentPlayers, index, playerName) {
-    return (
-      currentPlayers[index + 1] === undefined &&
-      playerName !== "" &&
-      currentPlayers.length < 4
-    );
-  }
+    players.splice(index, 1, newName);
+    if (this.inputIsMissing(players)) {
+      players.push("");
+    }
 
-  getPlayers = (players) => {
-    return players.filter((player) => player !== "");
-  };
-
-  getPlayerCount = (players) => {
-    return this.getPlayers(players).length;
+    this.setState({ players });
   };
 
   render() {
     return (
-      <div>
-        {this.props.players.map((player, index) => (
+      <form onSubmit={this.handleSubmit}>
+        {this.state.players.map((player, index) => (
           <div className="nes-field" key={index}>
             <label htmlFor="name_field">Your name</label>
             <input
               type="text"
               id="name_field"
               className="nes-input"
-              onBlur={(event) => {
-                this.handleBlur(event.target.value, index);
-              }}
+              onChange={(event) => this.handleChange(event, index)}
+              value={player}
             />
           </div>
         ))}
-        <div>
-          <button
-            color="primary"
-            disabled={this.getPlayerCount(this.props.players) < 2}
-            onClick={() =>
-              this.props.onStart(this.getPlayers(this.props.players))
-            }
-          >
-            Start
-          </button>
-        </div>
-      </div>
+        <input
+          style={{ marginTop: "16px" }}
+          disabled={this.state.players.length < 2}
+          type="submit"
+          value="Submit"
+        />
+      </form>
     );
   }
 }
