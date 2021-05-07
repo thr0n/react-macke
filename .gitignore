@@ -30,3 +30,4 @@ cypress/fixtures/
 cypress/plugins/
 cypress/support/
 /.idea/
+/dist
